@@ -1,3 +1,4 @@
+// This class is used for controlling audio.
 class Audio {
 public:
     // Begins playing audio for scene.

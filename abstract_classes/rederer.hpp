@@ -1,3 +1,4 @@
+// This class uses OpenGL to draw contents to the screen. 
 class Renderer {
 public:
     // Draws the current scene.

@@ -1,3 +1,4 @@
+// This class handles the user interface.
 class UserInterface {
 public:
     // Modifies the scene when arrow keys are pressed.
