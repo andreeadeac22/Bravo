@@ -5,7 +5,7 @@ ice thickness, and the ice bed (hard rock beneath the ice).
 
 
 How to call:
-python eris_and_rms_to_tiles.py bedmap2_surface.txt
+python FullERIS2crstb.py bedmap2_surface.txt
 	bedmap2_thickness.txt bedmap2_bed.txt config.txt 
 
 """
@@ -26,10 +26,10 @@ for k in xrange(6):
 	thickness.readline()
 	bed.readline()
 
-output = open("output.txt", "w")
+output = open("output.csv", "w")
 
 #write a simple header:
-output.write("Col\tRow\tSurface\tThickness\tBed\n")
+output.write("Col,Row,Surface,Thickness,Bed\n")
 
 for row, line in enumerate(surface):
 	thickline = thickness.readline()
@@ -50,8 +50,8 @@ for row, line in enumerate(surface):
 				thickVal = thickVals[col]
 				bedVal = bedVals[col]
 				output.write(
-					str(col) + "\t" + str(row) + "\t" +
-					surfVal +"\t"+ thickVal + "\t" + bedVal + "\n")
+					str(col) + "," + str(row) + "," +
+					surfVal +","+ thickVal + "," + bedVal + "\n")
 
 output.close()
 surface.close()
