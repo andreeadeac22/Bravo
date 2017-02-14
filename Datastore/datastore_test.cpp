@@ -10,6 +10,7 @@ int main()
         pqxx::work W(C);
 
         pqxx::result R = W.exec("SELECT * FROM test");
+        w.commit();
 
         std::cout << "Found " << R.size() << " row:" << std::endl;
         for (auto row: R)
