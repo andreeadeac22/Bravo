@@ -27,8 +27,6 @@ rms.readline()
 begx, begy = int(sys.argv[3]), int(sys.argv[4])
 lenx, leny = int(sys.argv[5]), int(sys.argv[6])
 
-print begy, leny
-
 #read the xllcorner, yllcorner, cellsize value, NODATA value from both ESRI and RMS:
 for k in xrange(4):
 	eris.readline()
@@ -49,7 +47,6 @@ for row, line in enumerate(eris):
 	else:
 		for col, valueS in enumerate(line.split()):
 			rmsVals = rmsline.split()
-			value = int(valueS)
 			if col<begx:
 				continue
 			elif col > (begx + lenx):
