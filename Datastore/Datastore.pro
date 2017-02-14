@@ -9,6 +9,6 @@ LIBS += -L/opt/local/lib -L/usr/local/lib -losg -losgGA -losgDB -losgViewer -los
 #This dependency is only needed for the perlin noise tests
 INCLUDEPATH += /usr/local/include
 
-SOURCES += datastore_test.cpp
+SOURCES += datastore_test.cpp datastore.cpp
 
-HEADERS += 
+HEADERS += datastore.hpp
