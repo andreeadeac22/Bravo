@@ -54,7 +54,7 @@ SET default_with_oids = false;
 
 CREATE TABLE points (
     col integer,
-    "row" integer,
+    ro integer,
     surface integer,
     thickness integer,
     bed integer,
@@ -97,7 +97,7 @@ ALTER TABLE ONLY points ALTER COLUMN id SET DEFAULT nextval('points_id_seq'::reg
 -- Data for Name: points; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY points (col, "row", surface, thickness, bed, geom, id) FROM stdin;
+COPY points (col, ro, surface, thickness, bed, geom, id) FROM stdin;
 2601	1874	-9999	-9999	-328	0101000020E6100000000000000052A4400000000000489D40	1
 2602	1874	-9999	-9999	-348	0101000020E6100000000000000054A4400000000000489D40	2
 2603	1874	-9999	-9999	-350	0101000020E6100000000000000056A4400000000000489D40	3
