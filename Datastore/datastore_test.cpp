@@ -5,9 +5,9 @@
 int main()
 {
     Datastore db;
-    db.connect("testdb");
-    db.run_query("SELECT * FROM test");
-    std::cout << "Found " << db.res.size() << " row:" << std::endl;
-    for (auto row: db.res)
-        std::cout << row[1].c_str() << std::endl;
+    db.connect("test_dump");
+    vector<DbData> data_all = db.getAllPoints();
+    std::cout << "Found " << data_all.size() << " rows." << std::endl;
+    vector<DbData> data_rectangle = db.getPointsInRectangle(2592, 1935, 2669, 1976);
+    std::cout << "Found " << data_rectangle.size() << " rows." << std::endl;
 }
