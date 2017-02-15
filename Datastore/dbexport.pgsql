@@ -9351,6 +9351,13 @@ COPY spatial_ref_sys  FROM stdin;
 
 
 --
+-- Name: points_gix; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX points_gix ON points USING gist (geom);
+
+
+--
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
