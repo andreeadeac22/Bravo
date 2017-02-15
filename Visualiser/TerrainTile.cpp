@@ -127,15 +127,27 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
     waterSurface->setVertexArray(triangles);
     waterSurface->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES, 0, 6));
 
-    Vec3Array* iceUpperTris = new Vec3Array;
-    Vec3Array* iceUpperNorms = new Vec3Array;
-    int iceUpperTriCount = 0;
-
     Vec3Array* iceFaceTris = new Vec3Array;
     int iceFaceTriCount = 0;
 
     int vertexCount = heightMap->getWidth();
-    float vertexSep = heightMap->getSampleSpacing();
+
+    Vec3Array* iceUpperVertices = new Vec3Array;
+    Vec3Array* iceUpperNorms = new Vec3Array;
+    for (int x = 0; x < vertexCount; x++) {
+        for (int y = 0; y < vertexCount; y++) {
+            iceUpperVertices->push_back(heightMap->getVertexp(x, y));
+            iceUpperNorms->push_back(heightMap->getNormal(x, y));
+        }
+    }
+
+    Geometry* iceUpperSurface = new Geometry;
+    iceUpperSurface->getOrCreateStateSet()->setAttributeAndModes(iceMaterial.get(), StateAttribute::ON);
+
+    iceUpperSurface->setVertexArray(iceUpperVertices);
+    iceUpperSurface->setNormalArray(iceUpperNorms, Array::BIND_PER_VERTEX);
+
+    DrawElementsUInt* iceUpperFaces = new DrawElementsUInt(PrimitiveSet::TRIANGLES, 0);
 
     for (int x = 0; x < vertexCount - 1; x++) {
         for (int y = 0; y < vertexCount - 1; y++) {
@@ -144,25 +156,23 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
             bool bl = heightMap->isIce(x, y);
             bool br = heightMap->isIce(x + 1, y);
 
+            uint32_t ibl = x * vertexCount + y;
+            uint32_t ibr = (x + 1) * vertexCount + y;
+            uint32_t itl = x * vertexCount + (y + 1);
+            uint32_t itr = (x + 1) * vertexCount + (y + 1);
+
             Vec3 vbl = heightMap->getVertexp(x, y);
             Vec3 vbr = heightMap->getVertexp(x + 1, y);
             Vec3 vtl = heightMap->getVertexp(x, y + 1);
             Vec3 vtr = heightMap->getVertexp(x + 1, y + 1);
 
-            Vec3 nbl = heightMap->getNormal(x, y);
-            Vec3 nbr = heightMap->getNormal(x + 1, y);
-            Vec3 ntl = heightMap->getNormal(x, y + 1);
-            Vec3 ntr = heightMap->getNormal(x + 1, y + 1);
-
             //If the vertices at bottom are ice
             if (bl && br) {
                 if (tl) {
                     //Forms a left hand right hand triangle
-                    //TODO: Use vertex element array instead ?
-                    iceUpperTris->push_back(vbl); iceUpperNorms->push_back(nbl);
-                    iceUpperTris->push_back(vbr); iceUpperNorms->push_back(nbr);
-                    iceUpperTris->push_back(vtl); iceUpperNorms->push_back(ntl);
-                    iceUpperTriCount++;
+                    iceUpperFaces->push_back(ibl);
+                    iceUpperFaces->push_back(ibr);
+                    iceUpperFaces->push_back(itl);
 
                     if (!tr) {
                         //Draw diagonal face of ice
@@ -176,10 +186,9 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
                     }
                 } else if (tr) {
                     //Forms a right hand triangle
-                    iceUpperTris->push_back(vbl); iceUpperNorms->push_back(nbl);
-                    iceUpperTris->push_back(vbr); iceUpperNorms->push_back(nbr);
-                    iceUpperTris->push_back(vtr); iceUpperNorms->push_back(ntr);
-                    iceUpperTriCount++;
+                    iceUpperFaces->push_back(ibl);
+                    iceUpperFaces->push_back(ibr);
+                    iceUpperFaces->push_back(itr);
 
                     if (!tl) {
                         //Draw diagonal face of ice
@@ -205,11 +214,9 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
             if (tl && tr) {
                 if (br) {
                     //Upper right hand triangle
-                    iceUpperTris->push_back(vtr); iceUpperNorms->push_back(ntr);
-                    iceUpperTris->push_back(vtl); iceUpperNorms->push_back(ntl);
-                    iceUpperTris->push_back(vbr); iceUpperNorms->push_back(nbr);
-
-                    iceUpperTriCount++;
+                    iceUpperFaces->push_back(itr);
+                    iceUpperFaces->push_back(itl);
+                    iceUpperFaces->push_back(ibr);
 
                     if (!bl) {
                         //Draw diagonal face of ice
@@ -223,11 +230,9 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
                     }
                 } else if (bl) {
                     //Upper left hand triangle
-                    iceUpperTris->push_back(vtr); iceUpperNorms->push_back(ntr);
-                    iceUpperTris->push_back(vtl); iceUpperNorms->push_back(ntl);
-                    iceUpperTris->push_back(vbl); iceUpperNorms->push_back(nbl);
-
-                    iceUpperTriCount++;
+                    iceUpperFaces->push_back(itr);
+                    iceUpperFaces->push_back(itl);
+                    iceUpperFaces->push_back(ibl);
 
                     if (!br) {
                         //Draw diagonal face of ice
@@ -270,12 +275,9 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
         }
     }
 
-    Geometry* iceUpperSurface = new Geometry;
-    iceUpperSurface->getOrCreateStateSet()->setAttributeAndModes(iceMaterial.get(), StateAttribute::ON);
+    iceUpperSurface->addPrimitiveSet(iceUpperFaces);
 
-    iceUpperSurface->setVertexArray(iceUpperTris);
-    iceUpperSurface->setNormalArray(iceUpperNorms, Array::BIND_PER_VERTEX);
-    iceUpperSurface->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES, 0, iceUpperTriCount * 3));
+    //iceUpperSurface->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES, 0, iceUpperTriCount * 3));
 
     Geometry* iceFaceSurface = new Geometry;
     iceFaceSurface->getOrCreateStateSet()->setAttributeAndModes(iceMaterial.get(), StateAttribute::ON);
@@ -307,41 +309,44 @@ void StaticIceTile::setHeightMap(HeightMap *heightMap)
     iceMaterial->setSpecular(Material::FRONT_AND_BACK, Vec4(0.8, 0.8, 0.8, 1));
     iceMaterial->setShininess(Material::FRONT_AND_BACK, 64);
 
-    Vec3Array* triangles = new Vec3Array;
-    Vec3Array* normals = new Vec3Array;
-    int triCount = 0;
-
     int vertexCount = heightMap->getWidth();
-
-    for (int x = 0; x < vertexCount - 1; x++) {
-        for (int y = 0; y < vertexCount - 1; y++) {
-            Vec3 vbl = heightMap->getVertexp(x, y);
-            Vec3 vbr = heightMap->getVertexp(x + 1, y);
-            Vec3 vtl = heightMap->getVertexp(x, y + 1);
-            Vec3 vtr = heightMap->getVertexp(x + 1, y + 1);
-
-            Vec3 nbl = heightMap->getNormal(x, y);
-            Vec3 nbr = heightMap->getNormal(x + 1, y);
-            Vec3 ntl = heightMap->getNormal(x, y + 1);
-            Vec3 ntr = heightMap->getNormal(x + 1, y + 1);
-
-            triangles->push_back(vbl); normals->push_back(nbl);
-            triangles->push_back(vbr); normals->push_back(nbr);
-            triangles->push_back(vtl); normals->push_back(ntl);
-            triangles->push_back(vbr); normals->push_back(nbr);
-            triangles->push_back(vtr); normals->push_back(ntr);
-            triangles->push_back(vtl); normals->push_back(ntl);
-
-            triCount += 2;
-        }
-    }
 
     Geometry* iceSurface = new Geometry;
     iceSurface->getOrCreateStateSet()->setAttributeAndModes(iceMaterial.get(), StateAttribute::ON);
 
+    //Load the vertices
+    Vec3Array* triangles = new Vec3Array;
+    Vec3Array* normals = new Vec3Array;
+    for (int x = 0; x < vertexCount; x++) {
+        for (int y = 0; y < vertexCount; y++) {
+            triangles->push_back(heightMap->getVertexp(x, y));
+            normals->push_back(heightMap->getNormal(x, y));
+        }
+    }
+
     iceSurface->setVertexArray(triangles);
     iceSurface->setNormalArray(normals, Array::BIND_PER_VERTEX);
-    iceSurface->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES, 0, triCount * 3));
+
+    //Define the faces as elements list
+    DrawElementsUInt* faces = new DrawElementsUInt(PrimitiveSet::TRIANGLES, 0);
+
+    for (int x = 0; x < vertexCount - 1; x++) {
+        for (int y = 0; y < vertexCount - 1; y++) {
+            uint32_t ibl = x * vertexCount + y;
+            uint32_t ibr = (x + 1) * vertexCount + y;
+            uint32_t itl = x * vertexCount + (y + 1);
+            uint32_t itr = (x + 1) * vertexCount + (y + 1);
+
+            faces->push_back(ibl);
+            faces->push_back(ibr);
+            faces->push_back(itl);
+            faces->push_back(ibr);
+            faces->push_back(itr);
+            faces->push_back(itl);
+        }
+    }
+
+    iceSurface->addPrimitiveSet(faces);
 
     tile_geode->addChild(iceSurface);
 }
