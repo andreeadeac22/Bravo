@@ -1,0 +1,1 @@
+﻿SELECT col,row, ST_AsText(geom), bed, thickness,  AS geom FROM points WHERE id>20 and id<30;
