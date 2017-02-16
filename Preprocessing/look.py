@@ -35,6 +35,10 @@ if __name__ == '__main__':
             data = row.Surface
         else:
             data = row.Thickness
+
+        if data < -5000:
+            data = 0
+
         matrix[row.Col - offset_w, row.Row - offset_h] = data
 
     plt.imshow(matrix,cmap='hot',interpolation='nearest')
