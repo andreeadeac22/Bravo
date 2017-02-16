@@ -54,11 +54,11 @@ vector<DbData> Datastore::processDbRows(pqxx::result& res) {
 }
 
 vector<DbData> Datastore::getAllPoints() {
-    pqxx::result res = run_query("SELECT id, col, row, surface, thickness, bed, ST_AsText(geom) FROM points");
+    pqxx::result res = run_query("SELECT id, col, row, surface, thickness, bed, ST_AsText(geom) FROM points ORDER BY col, row");
     return processDbRows(res);
 }
 
 vector<DbData> Datastore::getPointsInRectangle(int col1, int row1, int col2, int row2){
-    pqxx::result res = run_query("SELECT id, col, row, surface, thickness, bed, ST_AsText(geom) FROM points WHERE ST_MakeEnvelope(" + to_string(col1) + "," + to_string(row1) + "," + to_string(col2) + "," + to_string(row2) + ", 4326)&& geom");
+    pqxx::result res = run_query("SELECT id, col, row, surface, thickness, bed, ST_AsText(geom) FROM points WHERE ST_MakeEnvelope(" + to_string(col1) + "," + to_string(row1) + "," + to_string(col2) + "," + to_string(row2) + ", 4326)&& geom ORDER BY col, row");
     return processDbRows(res);
 }
