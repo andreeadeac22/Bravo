@@ -1,6 +1,9 @@
 #include <iostream>
 #include <pqxx/pqxx>
+#include <vector>
 #include <datastore.hpp>
+
+using namespace std;
 
 int main()
 {

@@ -1,5 +1,3 @@
-#include <iostream>
-#include <pqxx/pqxx>
 #include <datastore.hpp>
 
 using namespace std;
@@ -8,11 +6,11 @@ int Datastore::connect(string dbname) {
     try
     {
         conn = unique_ptr<pqxx::connection>(new pqxx::connection("dbname="+dbname));
-        std::cout << "Connected to " << conn->dbname() << std::endl;
+        cout << "Connected to " << conn->dbname() << endl;
     }
-    catch (const std::exception &e)
+    catch (const exception &e)
     {
-        std::cerr << e.what() << std::endl;
+        cerr << e.what() << endl;
         return 1;
     }
     return 0;
@@ -26,9 +24,9 @@ pqxx::result Datastore::run_query(string sql) {
         res = W.exec(sql);
         W.commit();
     }
-    catch (const std::exception &e)
+    catch (const exception &e)
     {
-        std::cerr << e.what() << std::endl;
+        cerr << e.what() << endl;
     }
     return res;
 }
