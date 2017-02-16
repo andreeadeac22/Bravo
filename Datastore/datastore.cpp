@@ -1,15 +1,14 @@
 #include <datastore.hpp>
+#include <iostream>
 
 using namespace std;
 
 int Datastore::connect(string dbname) {
-    try
-    {
-        conn = unique_ptr<pqxx::connection>(new pqxx::connection("dbname="+dbname));
+    try {
+        conn = unique_ptr<pqxx::connection>(
+                new pqxx::connection("dbname=" + dbname));
         cout << "Connected to " << conn->dbname() << endl;
-    }
-    catch (const exception &e)
-    {
+    } catch (const exception &e) {
         cerr << e.what() << endl;
         return 1;
     }
@@ -18,14 +17,11 @@ int Datastore::connect(string dbname) {
 
 pqxx::result Datastore::run_query(string sql) {
     pqxx::result res;
-    try
-    {
+    try {
         pqxx::work W(*conn);
         res = W.exec(sql);
         W.commit();
-    }
-    catch (const exception &e)
-    {
+    } catch (const exception &e) {
         cerr << e.what() << endl;
     }
     return res;
@@ -45,18 +41,26 @@ DbData Datastore::processDbRow(pqxx::result::tuple row) {
 
 vector<DbData> Datastore::processDbRows(pqxx::result& res) {
     vector<DbData> db_data_vec;
-    for(auto row:res){
+    for (auto row : res) {
         db_data_vec.push_back(processDbRow(row));
     }
     return db_data_vec;
 }
 
 vector<DbData> Datastore::getAllPoints() {
-    pqxx::result res = run_query("SELECT id, col, row, surface, thickness, bed, ST_AsText(geom) FROM points ORDER BY col, row");
+    pqxx::result res =
+            run_query(
+                    "SELECT id, col, row, surface, thickness, bed, ST_AsText(geom) FROM points ORDER BY col, row");
     return processDbRows(res);
 }
 
-vector<DbData> Datastore::getPointsInRectangle(int col1, int row1, int col2, int row2){
-    pqxx::result res = run_query("SELECT id, col, row, surface, thickness, bed, ST_AsText(geom) FROM points WHERE ST_MakeEnvelope(" + to_string(col1) + "," + to_string(row1) + "," + to_string(col2) + "," + to_string(row2) + ", 4326)&& geom ORDER BY col, row");
+vector<DbData> Datastore::getPointsInRectangle(int col1, int row1, int col2,
+        int row2) {
+    pqxx::result res =
+            run_query(
+                    "SELECT id, col, row, surface, thickness, bed, ST_AsText(geom) FROM points WHERE ST_MakeEnvelope("
+                            + to_string(col1) + "," + to_string(row1) + ","
+                            + to_string(col2) + "," + to_string(row2)
+                            + ", 4326)&& geom ORDER BY col, row");
     return processDbRows(res);
 }
