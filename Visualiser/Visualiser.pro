@@ -3,10 +3,24 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-LIBS += -lm -ldl -lGL -lGLU -lpthread -lXext -lX11
-LIBS += -ljpeg -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow
+!macx {
+    LIBS += -lm -ldl -lGL -lGLU -lpthread -lXext -lX11
+    LIBS += -ljpeg -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow
+}
+
+macx {
+    LIBS += -lm -ldl -lpthread -framework OpenGL
+    LIBS += -L/opt/local/lib -L/usr/local/lib -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow -lOpenThreads
+}
 
 #This dependency is only needed for the perlin noise tests
+macx {
+    INCLUDEPATH += /usr/local/include
+}
+
+DESTDIR = build
+OBJECTS_DIR = build
+
 INCLUDEPATH += 
 
 SOURCES += main.cpp \
