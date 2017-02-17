@@ -18,6 +18,9 @@ macx {
     INCLUDEPATH += /usr/local/include
 }
 
+DESTDIR = build
+OBJECTS_DIR = build
+
 INCLUDEPATH += 
 
 SOURCES += main.cpp \
