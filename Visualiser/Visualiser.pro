@@ -21,17 +21,21 @@ macx {
 DESTDIR = build
 OBJECTS_DIR = build
 
-INCLUDEPATH += 
+INCLUDEPATH += ./include
 
-SOURCES += main.cpp \
+SOURCES += src/main.cpp \
     util/log.cpp \
-    TiledScene.cpp \
-    TerrainTile.cpp \
-    HeightMap.cpp
+    src/TiledScene.cpp \
+    src/TerrainTile.cpp \
+    src/HeightMap.cpp
 
 HEADERS += \
     util/AtomicQueue.h \
     util/log.h \
-    TiledScene.h \
-    TerrainTile.h \
-    HeightMap.h
+    include/TiledScene.h \
+    include/TerrainTile.h \
+    include/HeightMap.h
+
+unix {
+    system(mkdir -p build)
+}
