@@ -1,5 +1,5 @@
-#ifndef ATOMICQUEUE_H
-#define ATOMICQUEUE_H
+#ifndef UTIL_ATOMICQUEUE_H
+#define UTIL_ATOMICQUEUE_H
 
 #include <mutex>
 #include <condition_variable>
@@ -21,7 +21,10 @@ public:
 
     bool pop(T& val) {
         std::unique_lock<std::mutex> lk(mutex);
-        cond.wait(lk);
+
+        if (queue.empty()) {
+            cond.wait(lk);
+        }
 
         bool gotData = !queue.empty();
 
@@ -37,7 +40,10 @@ public:
 
     bool pop_timeout(T& val, uint32_t timeout) {
         std::unique_lock<std::mutex> lk(mutex);
-        cond.wait_for(lk, std::chrono::milliseconds(timeout));
+
+        if (queue.empty()) {
+            cond.wait_for(lk, std::chrono::milliseconds(timeout));
+        }
 
         bool gotData = !queue.empty();
 

@@ -3,14 +3,15 @@
 #include <osg/Material>
 
 #include <osgUtil/SmoothingVisitor>
+#include <osgUtil/Simplifier>
 
 using namespace osg;
 
-TerrainTile::TerrainTile(float t_width)
+TerrainTile::TerrainTile(float t_width, Vec2s coords)
     : tile_position(new PositionAttitudeTransform()),
-      tile_geode(new Geode()), tile_width(t_width)
+      tile_geode(new Geode()), tile_width(t_width),
+      tile_coords(coords), generated(false)
 {
-    tile_position->addChild(tile_geode.get());
 }
 
 void TerrainTile::setPosition(osg::Vec3d pos)
@@ -18,10 +19,24 @@ void TerrainTile::setPosition(osg::Vec3d pos)
     tile_position->setPosition(pos);
 }
 
+void TerrainTile::show()
+{
+    if (!tile_position->containsNode(tile_geode)) {
+        tile_position->addChild(tile_geode);
+    }
+}
+
+void TerrainTile::hide()
+{
+    if (tile_position->containsNode(tile_geode)) {
+        tile_position->removeChild(tile_geode);
+    }
+}
+
 /** Class WaterTile **/
 
-WaterTile::WaterTile(float t_width)
-    : TerrainTile(t_width), geometry(new Geometry())
+WaterTile::WaterTile(float t_width, osg::Vec2s coords)
+    : TerrainTile(t_width, coords), geometry(new Geometry())
 {
     ref_ptr<Material> material = new Material;
     material->setColorMode(Material::DIFFUSE);
@@ -52,8 +67,8 @@ WaterTile::WaterTile(float t_width)
     smoothifier.apply(*tile_geode.get());
 }
 
-BoringIceTile::BoringIceTile(float t_width)
-    : TerrainTile(t_width), geometry(new Geometry())
+BoringIceTile::BoringIceTile(float t_width, Vec2s coords)
+    : TerrainTile(t_width, coords), geometry(new Geometry())
 {
     ref_ptr<Material> material = new Material;
     material->setColorMode(Material::DIFFUSE);
@@ -86,8 +101,8 @@ BoringIceTile::BoringIceTile(float t_width)
     smoothifier.apply(*tile_geode.get());
 }
 
-StaticBoundaryIceTile::StaticBoundaryIceTile(float t_width)
-    : TerrainTile(t_width)
+StaticBoundaryIceTile::StaticBoundaryIceTile(float t_width, osg::Vec2s coords)
+    : TerrainTile(t_width, coords)
 {
 }
 
@@ -295,8 +310,8 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
     tile_geode->addChild(iceFaceSurface);
 }
 
-StaticIceTile::StaticIceTile(float t_width)
-    : TerrainTile(t_width)
+StaticIceTile::StaticIceTile(float t_width, osg::Vec2s coords)
+    : TerrainTile(t_width, coords)
 {
 }
 
@@ -349,24 +364,28 @@ void StaticIceTile::setHeightMap(HeightMap *heightMap)
     iceSurface->addPrimitiveSet(faces);
 
     tile_geode->addChild(iceSurface);
+
+//    osgUtil::Simplifier simplifier;
+//    simplifier.setSampleRatio(0.5);
+//    simplifier.apply(*tile_geode.get());
 }
 
 /**
  * @brief Construct a terrain tile of given type
  */
-TerrainTile* constructTerrainTileType(TerrainTile::TileType type, float t_width)
+TerrainTile* constructTerrainTileType(TerrainTile::TileType type, float t_width, osg::Vec2s coords)
 {
     switch (type) {
     case TerrainTile::TYPE_NONE:
-        return new TerrainTile(t_width);
+        return new TerrainTile(t_width, coords);
     case TerrainTile::TYPE_WATER:
-        return new WaterTile(t_width);
+        return new WaterTile(t_width, coords);
     case TerrainTile::TYPE_BORING_ICE:
-        return new BoringIceTile(t_width);
+        return new BoringIceTile(t_width, coords);
     case TerrainTile::TYPE_STATIC_BOUNDARY_ICE:
-        return new StaticBoundaryIceTile(t_width);
+        return new StaticBoundaryIceTile(t_width, coords);
     case TerrainTile::TYPE_STATIC_ICE:
-        return new StaticIceTile(t_width);
+        return new StaticIceTile(t_width, coords);
     default:
         throw "Not implemented yet";
     }

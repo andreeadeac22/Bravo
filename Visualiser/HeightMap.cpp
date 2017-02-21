@@ -12,8 +12,9 @@ osg::Vec3 HeightMap::getNormal(int x, int y) const
 {
     //The below commented out code shows it's possible to generate smooth normals
     //Without knowing whats in the tile next to you (with only slightly noticeable effects)
-//    if (x == 0 || y == 0 || x == getWidth() - 1 || y == getWidth() - 1)
-//        return osg::Vec3(0, 0, 1.0f);
+    if (x == 0 || y == 0 || x == getWidth() - 1 || y == getWidth() - 1) {
+        return osg::Vec3(0, 0, 1.0f);
+    }
 
     /*
      * Normal of a point can be found by considering the average

@@ -7,6 +7,7 @@
 #include "util/Array2d.h"
 #include "TerrainTile.h"
 #include "HeightMap.h"
+#include "AsyncTerrainUpdater.h"
 
 class TiledScene : public osg::Referenced
 {
@@ -23,6 +24,16 @@ public:
     /** Set the height map data for the tile at this location */
     void setHeightMap(int x, int y, HeightMap *heightMap);
 
+    /**
+     * @brief Update the visible nodes based on camera position
+     * @param pos
+     */
+    void updateCameraPosition(osg::Vec3d pos);
+
+    void setRenderDistance(float dist) {
+        render_distance_sq = dist * dist;
+    }
+
     osg::Node* getNode() {
         return group.get();
     }
@@ -34,6 +45,10 @@ private:
     float tile_width;
 
     osg::ref_ptr<osg::Group> group;
+
+    float render_distance_sq;
+
+    AsyncTerrainUpdater asyncTerrainUpdater;
 
 };
 

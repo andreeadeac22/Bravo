@@ -14,27 +14,31 @@ macx {
 }
 
 #This dependency is only needed for the perlin noise tests
-macx {
-    INCLUDEPATH += /usr/local/include
+!macx {
+    INCLUDEPATH += $$PWD/../../glm
+}
+
+!macx {
+    INCLUDEPATH += ..
 }
 
 DESTDIR = build
 OBJECTS_DIR = build
 
-INCLUDEPATH += ./src
-
-SOURCES += src/main.cpp \
+SOURCES += main.cpp \
     util/log.cpp \
-    src/TiledScene.cpp \
-    src/TerrainTile.cpp \
-    src/HeightMap.cpp
+    TiledScene.cpp \
+    TerrainTile.cpp \
+    HeightMap.cpp \
+    AsyncTerrainUpdater.cpp
 
 HEADERS += \
     util/AtomicQueue.h \
     util/log.h \
-    src/TiledScene.h \
-    src/TerrainTile.h \
-    src/HeightMap.h
+    TiledScene.h \
+    TerrainTile.h \
+    HeightMap.h \
+    AsyncTerrainUpdater.h
 
 unix {
     system(mkdir -p build)
