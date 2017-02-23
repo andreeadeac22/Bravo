@@ -11,6 +11,7 @@ CONFIG -= qt
 macx {
     LIBS += -lm -ldl -lpthread -framework OpenGL
     LIBS += -L/opt/local/lib -L/usr/local/lib -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow -lOpenThreads
+    QMAKE_CXXFLAGS += -std=c++14 -Wall -Wextra -pedantic
 }
 
 #This dependency is only needed for the perlin noise tests
