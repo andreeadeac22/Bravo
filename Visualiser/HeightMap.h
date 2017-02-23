@@ -1,5 +1,4 @@
-#ifndef HEIGHTMAP_H
-#define HEIGHTMAP_H
+#pragma once
 
 #include <osg/Vec3>
 
@@ -92,5 +91,3 @@ private:
     Array2D<osg::Vec3> vertices;
 
 };
-
-#endif // HEIGHTMAP_H

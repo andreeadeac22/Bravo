@@ -1,5 +1,4 @@
-#ifndef TILEDSCENE_H
-#define TILEDSCENE_H
+#pragma once
 
 #include <osg/Group>
 #include <osg/Referenced>
@@ -9,6 +8,10 @@
 #include "HeightMap.h"
 #include "AsyncTerrainUpdater.h"
 
+/**
+ * @brief Handles loading/unloading of terrain tiles,
+ * including based on the users position in the scene
+ */
 class TiledScene : public osg::Referenced
 {
 public:
@@ -51,5 +54,3 @@ private:
     AsyncTerrainUpdater asyncTerrainUpdater;
 
 };
-
-#endif // TILEDSCENE_H

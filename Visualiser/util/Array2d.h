@@ -1,9 +1,11 @@
-#ifndef ARRAY2D_H
-#define ARRAY2D_H
+#pragma once
 
-#define S_ASSERT(cond, msg) if (!(cond)) throw msg;
+#include "util/log.h"
 
 template <class T>
+/**
+ * @brief 2 dimensional array class
+ */
 class Array2D {
 public:
     Array2D(int width, int height)
@@ -36,5 +38,3 @@ private:
     T *data;
 
 };
-
-#endif // ARRAY2D_H

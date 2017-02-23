@@ -1,5 +1,4 @@
-#ifndef TERRAINTILE_H
-#define TERRAINTILE_H
+#pragma once
 
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -8,6 +7,10 @@
 
 #include "HeightMap.h"
 
+/**
+ * @brief Handles scene representation of a terrain tile in the scene.
+ * This is an abstract class as a base for tile types.
+ */
 class TerrainTile
 {
 public:
@@ -105,5 +108,3 @@ public:
  * @brief Construct a terrain tile of given type
  */
 TerrainTile* constructTerrainTileType(TerrainTile::TileType type, float t_width, osg::Vec2s coords);
-
-#endif // TERRAINTILE_H

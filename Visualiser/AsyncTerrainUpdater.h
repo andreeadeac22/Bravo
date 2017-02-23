@@ -1,5 +1,4 @@
-#ifndef ASYNCTERRAINUPDATER_H
-#define ASYNCTERRAINUPDATER_H
+#pragma once
 
 #include <thread>
 #include <vector>
@@ -8,6 +7,9 @@
 
 #include "TerrainTile.h"
 
+/**
+ * @brief Class to manage asynchronous terrain loading
+ */
 class AsyncTerrainUpdater : public AsyncJobHandler<TerrainTile*>
 {
 public:
@@ -16,5 +18,3 @@ public:
     virtual void process(TerrainTile* tile);
 
 };
-
-#endif // ASYNCTERRAINUPDATER_H

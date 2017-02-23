@@ -9,6 +9,19 @@
 #include "util/log.h"
 
 template <class T>
+/**
+ * @brief AsyncJobHandler is an abstract class providing a base
+ * to turn a class which handles small work units (jobs) into an
+ * asynchronously operating class.
+ *  Work units are defined by the programmer, as a template
+ * of this class.
+ *  Allows the programmer to set worker threads running in the background
+ * to process jobs. The super class must implement the virtual
+ * "process" method, to process each work unit.
+ *  An AsyncJobHandler object can process jobs serially by calling
+ * processNJobs(maxjobs) or asynchronous by threads spawned by calling
+ * setThreadCount(N)
+ */
 class AsyncJobHandler {
     struct ThreadStateHandler {
         bool running;
