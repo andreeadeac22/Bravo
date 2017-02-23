@@ -3,14 +3,16 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
+LIBS += -lpqxx -lsnappy -lm -ldl -lpthread -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow -lOpenThreads
+
 !macx {
-    LIBS += -lm -ldl -lGL -lGLU -lpthread -lXext -lX11
-    LIBS += -ljpeg -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow
+    LIBS += -lGL -lGLU -lXext -lX11
+    LIBS += -ljpeg
 }
 
 macx {
     LIBS += -lm -ldl -lpthread -framework OpenGL
-    LIBS += -L/opt/local/lib -L/usr/local/lib -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow -lOpenThreads
+    LIBS += -L/opt/local/lib -L/usr/local/lib
     QMAKE_CXXFLAGS += -std=c++14 -Wall -Wextra -pedantic
 }
 
@@ -32,7 +34,8 @@ SOURCES += main.cpp \
     TerrainTile.cpp \
     HeightMap.cpp \
     AsyncTerrainUpdater.cpp \
-    KeyboardController.cpp
+    KeyboardController.cpp \
+    TileLoader.cpp
 
 HEADERS += \
     util/AtomicQueue.h \
@@ -41,7 +44,8 @@ HEADERS += \
     TerrainTile.h \
     HeightMap.h \
     AsyncTerrainUpdater.h \
-    KeyboardController.h
+    KeyboardController.h \
+    TileLoader.h
 
 unix {
     system(mkdir -p build)
