@@ -2,6 +2,7 @@
 #define ASYNCTERRAINUPDATER_H
 
 #include <thread>
+#include <vector>
 
 #include "util/AtomicQueue.h"
 
@@ -10,7 +11,14 @@
 class AsyncTerrainUpdater
 {
 public:
-    AsyncTerrainUpdater();
+    AsyncTerrainUpdater(int num_threads = 1);
+
+    ~AsyncTerrainUpdater();
+
+    /**
+     * @brief Stop all threads
+     */
+    void stop();
 
     /**
      * @brief Queue an update for this terrain tile
@@ -21,16 +29,10 @@ public:
     }
 
     void run_thread();
-
-    void stop() {
-        updateQueue.notifyAll();
-        thread.join();
-    }
-
 private:
     AtomicQueue<TerrainTile*> updateQueue;
 
-    std::thread thread;
+    std::vector<std::thread*> threads;
 
 };
 

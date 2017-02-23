@@ -42,10 +42,28 @@ static void genIceHeightMap(GridHeightMap &heightMap, int tile_x, int tile_y, fl
     }
 }
 
-AsyncTerrainUpdater::AsyncTerrainUpdater()
-    : updateQueue(), thread(&AsyncTerrainUpdater::run_thread, this)
+AsyncTerrainUpdater::AsyncTerrainUpdater(int num_threads)
+    : updateQueue()
 {
+    for (int i = 0; i < num_threads; i++) {
+        threads.push_back(new std::thread(&AsyncTerrainUpdater::run_thread, this));
+    }
+}
 
+AsyncTerrainUpdater::~AsyncTerrainUpdater()
+{
+    for (int i = 0; i < threads.size(); i++) {
+        delete threads.at(i);
+    }
+}
+
+void AsyncTerrainUpdater::stop()
+{
+    updateQueue.notifyAll();
+
+    for (int i = 0; i < threads.size(); i++) {
+        threads.at(i)->join();
+    }
 }
 
 void AsyncTerrainUpdater::run_thread()
@@ -55,13 +73,13 @@ void AsyncTerrainUpdater::run_thread()
     while (updateQueue.pop(tile)) {
         osg::Vec2s tilePos = tile->getCoords();
 
-        log_info << "Do update " << tilePos.x() << " , " << tilePos.y() << std::endl;
+        //log_info << "Do update " << tilePos.x() << " , " << tilePos.y() << std::endl;
 
         GridHeightMap heightMap(32, tile->getTileWidth());
         genIceHeightMap(heightMap, tilePos.x(), tilePos.y(), tile->getTileWidth());
         tile->setHeightMap(&heightMap);
 
-        log_info << "Updated " << tilePos.x() << " , " << tilePos.y() << std::endl;
+        //log_info << "Updated " << tilePos.x() << " , " << tilePos.y() << std::endl;
     }
 
     log_warn << "Async terrain updater thread exiting.." << std::endl;
