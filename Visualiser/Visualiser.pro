@@ -31,7 +31,8 @@ SOURCES += main.cpp \
     TiledScene.cpp \
     TerrainTile.cpp \
     HeightMap.cpp \
-    AsyncTerrainUpdater.cpp
+    AsyncTerrainUpdater.cpp \
+    KeyboardController.cpp
 
 HEADERS += \
     util/AtomicQueue.h \
@@ -39,7 +40,8 @@ HEADERS += \
     TiledScene.h \
     TerrainTile.h \
     HeightMap.h \
-    AsyncTerrainUpdater.h
+    AsyncTerrainUpdater.h \
+    KeyboardController.h
 
 unix {
     system(mkdir -p build)

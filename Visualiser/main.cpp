@@ -32,6 +32,7 @@ COpyright (c) Franclin Foping franclin@netcourrier.com
 
 #include "TiledScene.h"
 #include "HeightMap.h"
+#include "KeyboardController.h"
 
 #include <iostream>
 
@@ -93,9 +94,12 @@ int main()
     //terrainMan->setTransformation(Vec3(10.0, 10.0, 10.0), Vec3(0,0,0), Vec3(0, 1.0f, 0));
 
     Vec3 center(tile_width * tile_count * 0.5f, tile_width * tile_count * 0.5f, 30.0f);
-    terrainMan->setHomePosition(center + Vec3(5.0f, 5.0f, 5.0f), center, Vec3(0, 0, 1.0f));
+    terrainMan->setHomePosition(center + Vec3(2000.0f, 2000.0f, 2000.0f), center, Vec3(0, 0, 1.0f));
 
     //return (viewer.run());
+
+    ref_ptr<KeyboardController> keyboardCtrl(new KeyboardController);
+    viewer.addEventHandler(keyboardCtrl);
 
     viewer.realize();
 
@@ -105,7 +109,23 @@ int main()
         Vec3d cam_up = Vec3d(0,0,0);
         terrainMan->getTransformation(cam_eye, cam_center, cam_up);
 
-        //log_info << cam_center.x() << ", " << cam_center.y() << ", " << cam_center.z() << " (" << ((cam_center - cam_eye).length()) << ")" << std::endl;
+        Vec3d moveVec(0,0,0);
+        if (keyboardCtrl->isKeyDown(osgGA::GUIEventAdapter::KEY_Up)) {
+            moveVec += Vec3d(1.0, 0.0, 0.0);
+        } else if (keyboardCtrl->isKeyDown(osgGA::GUIEventAdapter::KEY_Down)) {
+            moveVec += Vec3d(-1.0, 0.0, 0.0);
+        } else if (keyboardCtrl->isKeyDown(osgGA::GUIEventAdapter::KEY_Left)) {
+            moveVec += Vec3d(0.0, -1.0, 0.0);
+        } else if (keyboardCtrl->isKeyDown(osgGA::GUIEventAdapter::KEY_Right)) {
+            moveVec += Vec3d(0.0, 1.0, 0.0);
+        }
+
+        if (moveVec != Vec3d(0.0, 0.0, 0.0)) {
+            cam_center += moveVec * 20.0f;
+
+            terrainMan->setTransformation(cam_eye, cam_center, cam_up);
+        }
+
         tiledScene->updateCameraPosition(cam_center);
 
         viewer.frame();
