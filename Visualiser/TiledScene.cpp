@@ -22,6 +22,8 @@ TiledScene::TiledScene(Array2D<TerrainTile::TileType> &tileTypes, float t_width)
             group->addChild(tile->getNode());
         }
     }
+
+    asyncTerrainUpdater.setThreadCount(2);
 }
 
 TiledScene::~TiledScene()
@@ -61,7 +63,7 @@ void TiledScene::updateCameraPosition(osg::Vec3d pos)
                 tile->show();
 
                 if (!tile->isGenerated()) {
-                    asyncTerrainUpdater.enqueueUpdate(tile);
+                    asyncTerrainUpdater.enqueueJob(tile);
                     tile->setGenerated();
                     //log_info << "Queued update of tile " << x << ", " << y << std::endl;
                 }

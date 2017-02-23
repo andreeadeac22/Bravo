@@ -42,6 +42,12 @@ public:
         std::unique_lock<std::mutex> lk(mutex);
 
         if (queue.empty()) {
+            //No timeout means immediately exit
+            if (timeout == 0U) {
+                lk.unlock();
+                return false;
+            }
+
             cond.wait_for(lk, std::chrono::milliseconds(timeout));
         }
 

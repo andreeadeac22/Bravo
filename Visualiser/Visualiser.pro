@@ -45,7 +45,8 @@ HEADERS += \
     HeightMap.h \
     AsyncTerrainUpdater.h \
     KeyboardController.h \
-    TileLoader.h
+    TileLoader.h \
+    util/AsyncJobHandler.h
 
 unix {
     system(mkdir -p build)
