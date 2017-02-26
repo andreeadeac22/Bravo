@@ -12,6 +12,8 @@ class SquareTile {
  public:
     SquareTile(const char* data, const size_t length);
 
+    float getHeightAt(int x, int y);
+
  private:
     std::uint16_t raw[TILE_SIZE][TILE_SIZE];
 };
@@ -23,7 +25,7 @@ class TileLoader {
 
 class PGTileLoader : TileLoader {
  public:
-    explicit PGTileLoader(std::string dbname);
+    PGTileLoader(const std::string dbname);
 
     ~PGTileLoader();
 
