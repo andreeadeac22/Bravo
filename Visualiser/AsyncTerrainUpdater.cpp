@@ -1,8 +1,12 @@
 #include "AsyncTerrainUpdater.h"
 
 #include "util/log.h"
+#include "TileLoader.h"
 
+#include <iostream>
 #include <glm/gtc/noise.hpp>
+
+PGTileLoader *tl;
 
 /**
  * @brief Function used to generate ice height map randomly, while we dont have real data
@@ -11,32 +15,24 @@
  * @param tile_y
  * @param tile_width
  */
-static void genIceHeightMap(GridHeightMap &heightMap, int tile_x, int tile_y, float tile_width)
-{
-    int tileVertexCount = heightMap.getWidth();
+static void genIceHeightMap(GridHeightMap &heightMap, int tile_x, int tile_y, float tile_width) {
+    std::string dbspec("dbname=grpproj");
 
-    float largeSimplexTileWidth = tile_width * 0.001f;
-    float smallSimplexTileWidth = tile_width * 0.01f;
+    if (tl == NULL) {
+        tl = new PGTileLoader(dbspec);
+    }
 
-    //Large simplex vertex separation
-    float lrgSpxVertSep = largeSimplexTileWidth / (tileVertexCount - 1);
+    SquareTile *t = tl->getTileAt(0, 0);
 
-    float lrgSpxOffsetX = tile_x * largeSimplexTileWidth;
-    float lrgSpxOffsetY = tile_y * largeSimplexTileWidth;
+    std::cout << "tile_x " << tile_x << ", tile_y " << tile_y << std::endl;
 
-    float smlSpxVertSep = smallSimplexTileWidth / (tileVertexCount - 1);
+    std::cout << "width: " << heightMap.getWidth() << std::endl;
 
-    float smlSpxOffsetX = tile_x * smallSimplexTileWidth;
-    float smlSpxOffsetY = tile_y * smallSimplexTileWidth;
+    int width = heightMap.getWidth();
 
-    for (int x = -1; x < tileVertexCount + 1; x++) {
-        for (int y = -1; y < tileVertexCount + 1; y++) {
-            glm::vec2 lrgSpxCoord(lrgSpxOffsetX + x * lrgSpxVertSep,
-                                  lrgSpxOffsetY + y * lrgSpxVertSep);
-            glm::vec2 smlSpxCoord(smlSpxOffsetX + x * smlSpxVertSep,
-                                  smlSpxOffsetY + y * smlSpxVertSep);
-
-            float height = 20.0f + glm::simplex(lrgSpxCoord) * 10.0f + glm::simplex(smlSpxCoord) * 2.0f;
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < width; y++) {
+            float height = t->getHeightAt(x, y);
             heightMap.set(x, y, height, false);
         }
     }

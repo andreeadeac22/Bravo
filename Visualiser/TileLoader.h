@@ -12,22 +12,24 @@ class SquareTile {
  public:
     SquareTile(const char* data, const size_t length);
 
+    float getHeightAt(int x, int y);
+
  private:
     std::uint16_t raw[TILE_SIZE][TILE_SIZE];
 };
 
 class TileLoader {
  public:
-    virtual SquareTile getTileAt(int x, int y) = 0;
+    virtual SquareTile* getTileAt(int x, int y) = 0;
 };
 
 class PGTileLoader : TileLoader {
  public:
-    explicit PGTileLoader(std::string dbname);
+    PGTileLoader(const std::string dbname);
 
     ~PGTileLoader();
 
-    virtual SquareTile getTileAt(int x, int y);
+    virtual SquareTile* getTileAt(int x, int y);
 
  private:
     pqxx::connection *conn;
