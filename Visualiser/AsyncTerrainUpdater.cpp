@@ -33,7 +33,7 @@ static void genIceHeightMap(GridHeightMap &heightMap, int tile_x, int tile_y, fl
     }
 }
 
-void AsyncTerrainUpdater::process(TerrainTile* tile)
+void TerrainUpdater::process(TerrainTile* tile)
 {
     osg::Vec2s tilePos = tile->getCoords();
 

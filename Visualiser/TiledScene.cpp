@@ -5,13 +5,15 @@
 using namespace osg;
 
 /**
- * @brief TiledScene
- * @param tileTypes Description of tile layout
+ * @brief Construct a tiled scene, specifying the layout of the tiles
+ * @param tileTypes Description of tile layout. Each entry in
+ * the tileTypes grid indicates what type of tile to load
+ * at this point (see TerrainTile::TileType)
  * @param t_width    Width of each tile (in units/meters)
  */
 TiledScene::TiledScene(Array2D<TerrainTile::TileType> &tileTypes, float t_width)
     : terrainTiles(tileTypes.width(), tileTypes.height()), tile_width(t_width),
-      group(new Group()), render_distance_sq(10.0f * 10.0f), asyncTerrainUpdater()
+      group(new Group()), render_distance_sq(10.0f * 10.0f), asyncTerrainUpdater(1)
 {
     for (int x = 0; x < terrainTiles.width(); x++) {
         for (int y = 0; y < terrainTiles.height(); y++) {
@@ -22,8 +24,6 @@ TiledScene::TiledScene(Array2D<TerrainTile::TileType> &tileTypes, float t_width)
             group->addChild(tile->getNode());
         }
     }
-
-    asyncTerrainUpdater.setThreadCount(2);
 }
 
 TiledScene::~TiledScene()

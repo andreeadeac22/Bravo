@@ -10,14 +10,22 @@
 
 /**
  * @brief Handles loading/unloading of terrain tiles,
- * including based on the users position in the scene
+ * including based on the users position in the scene.
+ *
+ * To use a tiled scene to render the scene, one must
+ * construct a tile, specifying the grid of tile types
+ * (see constructor). The camera position should be updated
+ * every frame (calling updateCameraPosition - which
+ * will also processes visible tiles).
  */
 class TiledScene : public osg::Referenced
 {
 public:
     /**
-     * @brief TiledScene
-     * @param tileTypes Description of tile layout
+     * @brief Construct a tiled scene, specifying the layout of the tiles
+     * @param tileTypes Description of tile layout. Each entry in
+     * the tileTypes grid indicates what type of tile to load
+     * at this point (see TerrainTile::TileType)
      * @param t_width    Width of each tile (in units/meters)
      */
     TiledScene(Array2D<TerrainTile::TileType> &tileTypes, float t_width);
