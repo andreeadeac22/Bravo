@@ -6,8 +6,6 @@
 #include <iostream>
 #include <glm/gtc/noise.hpp>
 
-PGTileLoader *tl;
-
 /**
  * @brief Function used to generate ice height map randomly, while we dont have real data
  * @param heightMap
@@ -17,12 +15,9 @@ PGTileLoader *tl;
  */
 static void genIceHeightMap(GridHeightMap &heightMap, int tile_x, int tile_y, float tile_width) {
     std::string dbspec("dbname=grpproj");
+    PGTileLoader tl(dbspec);
 
-    if (tl == NULL) {
-        tl = new PGTileLoader(dbspec);
-    }
-
-    SquareTile *t = tl->getTileAt(0, 0);
+    SquareTile *t = tl.getTileAt(0, 0);
 
     std::cout << "tile_x " << tile_x << ", tile_y " << tile_y << std::endl;
 

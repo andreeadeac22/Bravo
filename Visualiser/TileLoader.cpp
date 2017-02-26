@@ -36,7 +36,7 @@ PGTileLoader::PGTileLoader(const std::string dbspec) {
     }
 
     conn->prepare("load_tile",
-        "SELECT col, row, data from data WHERE id=$1");
+        "SELECT col, row, data from data WHERE col=$1 AND row=$2");
 }
 
 PGTileLoader::~PGTileLoader() {
@@ -44,10 +44,8 @@ PGTileLoader::~PGTileLoader() {
 }
 
 SquareTile* PGTileLoader::getTileAt(int x, int y) {
-    int id = (y * TILE_SIZE) + x;
-
     pqxx::work w(*conn);
-    pqxx::result r = w.prepared("load_tile")(id).exec();
+    pqxx::result r = w.prepared("load_tile")(x*TILE_SIZE)(y*TILE_SIZE).exec();
 
     // get raw binary data
     pqxx::binarystring bs(r[0][2]);
