@@ -4,6 +4,8 @@
 Convert an input (Geo)TIFF file to ESRI data. For some reason I get errors when
 I run this on my installation of Python3, but it works on Python2 ¯\_(ツ)_/¯
 
+Assumptions: Database grpproj and table data (with columns id(integer), row(integer), col(integer), data(bytea)) already exist. Also there is a folder data where snappy files will be saved. 
+
 Usage: ./geotiff2postgres.py <tiff file> <postgres user>
 """
 import sys
