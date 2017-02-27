@@ -50,5 +50,6 @@ for x in range(0, width, box_size):
         frame_height = min(height - y, 500)
 
         frame_data = data[x:x+frame_width,y:y+frame_height]
-        store_img(_id, x, y, frame_data)
-        _id = _id + 1
+        if np.count_nonzero(frame_data) >0:
+            store_img(_id, x, y, frame_data)
+            _id = _id + 1
