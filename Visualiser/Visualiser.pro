@@ -5,6 +5,8 @@ CONFIG -= qt
 
 LIBS += -lpqxx -lsnappy -lm -ldl -lpthread -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow -lOpenThreads
 
+QMAKE_CXXFLAGS += -g
+
 !macx {
     LIBS += -lGL -lGLU -lXext -lX11
     LIBS += -ljpeg

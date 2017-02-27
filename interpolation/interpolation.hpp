@@ -8,18 +8,21 @@
 // Holds data to represent state of rift.
 struct RiftPoint {
     double time;
-    double x;
-    double y;
-    double width;
+    // Two points on edges of rift
+    double x1;
+    double y1;
+    double x2;
+    double y2;
 };
 
 // Class used to interpolate rift.
 class Interpolation {
 public:
     // The spline models.
-    tk::spline s_x;
-    tk::spline s_y;
-    tk::spline s_w;
+    tk::spline s_x1;
+    tk::spline s_y1;
+    tk::spline s_x2;
+    tk::spline s_y2;
 
     // Fit interpolation model.
     void fit(std::vector<RiftPoint> points);
