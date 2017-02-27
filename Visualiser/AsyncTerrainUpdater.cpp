@@ -31,6 +31,8 @@ static void genIceHeightMap(GridHeightMap &heightMap, int tile_x, int tile_y, fl
             heightMap.set(x, y, height, false);
         }
     }
+
+    delete t;
 }
 
 void TerrainUpdater::process(TerrainTile* tile)
