@@ -15,7 +15,10 @@ QMAKE_CXXFLAGS += -g
 macx {
     LIBS += -lm -ldl -lpthread -framework OpenGL
     LIBS += -L/opt/local/lib -L/usr/local/lib
-    QMAKE_CXXFLAGS += -std=c++14 -Wall -Wextra -pedantic
+    QMAKE_CXXFLAGS -= -mmacosx-version-min=10.6
+    QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++14 -stdlib=libc++ -Wall -Wextra -pedantic
+    QMAKE_LFLAGS -= -mmacosx-version-min=10.6
+    QMAKE_LFLAGS += -mmacosx-version-min=10.7 -std=c++14 -stdlib=libc++ -Wall -Wextra -pedantic
 }
 
 #This dependency is only needed for the perlin noise tests
