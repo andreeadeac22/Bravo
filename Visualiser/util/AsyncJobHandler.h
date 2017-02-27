@@ -11,17 +11,10 @@
 
 template <class Worker, class Job>
 /**
- * @brief AsyncJobHandler is an abstract class providing a base
- * to turn a class which handles small work units (jobs) into an
- * asynchronously operating class.
- *  Work units are defined by the programmer, as a template
- * of this class.
- *  Allows the programmer to set worker threads running in the background
- * to process jobs. The super class must implement the virtual
- * "process" method, to process each work unit.
- *  An AsyncJobHandler object can process jobs serially by calling
- * processNJobs(maxjobs) or asynchronous by threads spawned by calling
- * setThreadCount(N)
+ * @brief AsyncJobHandler is a container class which
+ * can be used to automatically construct worker threads
+ * (as instances of the Worker class template argument)
+ * and run them in the background.
  */
 class AsyncJobHandler {
     struct ThreadStateHandler {
@@ -30,6 +23,12 @@ class AsyncJobHandler {
 
 public:
     template <class... Args>
+    /**
+     * @brief Construct an AsyncJobHandler with workerCount number
+     * of threads. The arguments passed to this constructor
+     * will be passed to the constructor of the Worker type
+     * for each thread.
+     */
     AsyncJobHandler(int workerCount, Args... args);
 
     ~AsyncJobHandler() {
