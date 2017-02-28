@@ -1,6 +1,6 @@
 #include "TileStore.h"
 
-#include <string>
+#include <cstring>
 #include <iostream>
 
 #include <pqxx/pqxx>
