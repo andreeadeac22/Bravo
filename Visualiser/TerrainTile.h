@@ -36,6 +36,8 @@ public:
         throw "This terrain tile does not accept height maps";
     }
 
+    virtual ~TerrainTile() = default;
+
     osg::Node* getNode() {
         return tile_position.get();
     }

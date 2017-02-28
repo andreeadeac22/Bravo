@@ -13,9 +13,13 @@ QMAKE_CXXFLAGS += -g
 }
 
 macx {
+    CONFIG += warn_on
     LIBS += -lm -ldl -lpthread -framework OpenGL
     LIBS += -L/opt/local/lib -L/usr/local/lib
+<<<<<<< HEAD
     INCLUDEPATH += /usr/local/include
+=======
+>>>>>>> 9f6fa89b041e332ec423dd0ce1a66e0f2cd73f00
     QMAKE_CXXFLAGS -= -mmacosx-version-min=10.6
     QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++14 -stdlib=libc++
     QMAKE_LFLAGS -= -mmacosx-version-min=10.6

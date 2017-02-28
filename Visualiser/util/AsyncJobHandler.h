@@ -74,7 +74,7 @@ AsyncJobHandler<Worker, Job>::AsyncJobHandler(int workerCount, Args... args)
 template <class Worker, class Job>
 void AsyncJobHandler<Worker, Job>::stop()
 {
-    for (int i = 0; i < threads.size(); i++) {
+    for (uint i = 0; i < threads.size(); i++) {
         //Signal a thread to stop
         threadStates[i]->running = false;
 
