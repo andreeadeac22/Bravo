@@ -24,11 +24,6 @@ macx {
     QMAKE_CXXFLAGS_WARN_ON = -Wall -Wextra -pedantic -Wno-unused-parameter
 }
 
-#This dependency is only needed for the perlin noise tests
-!macx {
-    INCLUDEPATH += $$PWD/../../glm
-}
-
 !macx {
     INCLUDEPATH += ..
 }

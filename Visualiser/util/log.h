@@ -1,13 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include <glm/glm.hpp>
 
 #define S_ASSERT(cond, msg) if (!(cond)) throw msg;
-
-//Support for GLM types printing
-std::ostream& operator<<(std::ostream &os, glm::vec3 const &m);
-std::ostream& operator<<(std::ostream &os, glm::vec2 const &m);
 
 namespace logging {
 

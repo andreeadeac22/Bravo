@@ -4,7 +4,6 @@
 #include "../Datastore/TileStore.h"
 
 #include <iostream>
-#include <glm/gtc/noise.hpp>
 
 /**
  * @brief Function used to generate ice height map randomly, while we dont have real data
