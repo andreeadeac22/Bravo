@@ -5,7 +5,13 @@
 #include <map>
 
 /**
- * @brief Handles keyboard input from OSG
+ * @brief Handles keyboard input from OSG.
+ * This class receives keydown and keyup events from
+ * the osg GUI adaptor and stores a map of key states.
+ *
+ * To use an instance of this class it must be
+ * known to the OSG viewer, by adding it as an event
+ * handler.
  */
 class KeyboardController : public osgGA::GUIEventHandler
 {
