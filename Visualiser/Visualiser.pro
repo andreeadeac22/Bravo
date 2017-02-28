@@ -16,6 +16,7 @@ macx {
     LIBS += -lm -ldl -lpthread -framework OpenGL
     LIBS += -L/opt/local/lib -L/usr/local/lib
     QMAKE_CXXFLAGS += -std=c++14 -Wall -Wextra -pedantic
+    INCLUDEPATH += /usr/local/include
 }
 
 #This dependency is only needed for the perlin noise tests
@@ -37,7 +38,8 @@ SOURCES += main.cpp \
     HeightMap.cpp \
     AsyncTerrainUpdater.cpp \
     KeyboardController.cpp \
-    TileLoader.cpp
+    ../Datastore/datastore.cpp \
+    ../Datastore/TileStore.cpp
 
 HEADERS += \
     util/AtomicQueue.h \
@@ -47,7 +49,8 @@ HEADERS += \
     HeightMap.h \
     AsyncTerrainUpdater.h \
     KeyboardController.h \
-    TileLoader.h \
+    ../Datastore/datastore.h \
+    ../Datastore/TileStore.h \
     util/AsyncJobHandler.h \
     util/Array2d.h
 
