@@ -6,6 +6,7 @@
 
 int main() {
     TileStore ts("grpproj");
-    SquareTile tile = ts.getTileById(0);
-    std::cout << "Retrieved tile with id " << tile.id << std::endl;
+    SquareTile* tile = ts.getTileById(1);
+    std::cout << "Retrieved tile with id " << tile->id << std::endl;
+    delete tile;
 }

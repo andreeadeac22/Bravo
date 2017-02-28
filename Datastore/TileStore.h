@@ -23,11 +23,11 @@ class TileStore : Datastore {
  public:
     TileStore(const std::string dbname);
 
-    SquareTile processDbRow(pqxx::result::tuple row);
+    SquareTile* processDbRow(pqxx::result::tuple row);
 
-    SquareTile getTileById(int id);
+    SquareTile* getTileById(int id);
 
-    SquareTile getTileAt(int x, int y);
+    SquareTile* getTileAt(int x, int y);
 };
 
 #endif  // TILESTORE_H
