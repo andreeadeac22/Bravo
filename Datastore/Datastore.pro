@@ -3,12 +3,11 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-LIBS += -lm -ldl -lpthread -framework OpenGL
+LIBS += -lm -ldl -lpthread -framework OpenGL -lsnappy
 LIBS += -L/opt/local/lib -L/usr/local/lib -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow -lOpenThreads -lpqxx -lpq
 
-#This dependency is only needed for the perlin noise tests
 INCLUDEPATH += /usr/local/include
 
-SOURCES += datastore_test.cpp datastore.cpp
+SOURCES += icestore_test.cpp datastore.cpp IceStore.cpp TileStore.cpp
 
-HEADERS += datastore.hpp
+HEADERS += datastore.h IceStore.h TileStore.h

@@ -1,7 +1,7 @@
 #include "AsyncTerrainUpdater.h"
 
 #include "util/log.h"
-#include "TileLoader.h"
+#include "../Datastore/TileStore.h"
 
 #include <iostream>
 #include <glm/gtc/noise.hpp>
@@ -15,9 +15,9 @@
  */
 static void genIceHeightMap(GridHeightMap &heightMap, int tile_x, int tile_y, float tile_width) {
     std::string dbspec("dbname=grpproj");
-    PGTileLoader tl(dbspec);
+    TileStore tl(dbspec);
 
-    SquareTile *t = tl.getTileAt(0, 0);
+    SquareTile t = tl.getTileAt(0, 0);
 
     std::cout << "tile_x " << tile_x << ", tile_y " << tile_y << std::endl;
 
@@ -27,12 +27,10 @@ static void genIceHeightMap(GridHeightMap &heightMap, int tile_x, int tile_y, fl
 
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < width; y++) {
-            float height = t->getHeightAt(x, y);
+            float height = t.getHeightAt(x, y);
             heightMap.set(x, y, height, false);
         }
     }
-
-    delete t;
 }
 
 void TerrainUpdater::process(TerrainTile* tile)

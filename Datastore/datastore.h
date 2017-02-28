@@ -5,14 +5,11 @@
 #include <vector>
 
 // Holds data from row in the database.
-struct DbData {
+class DbData {
+public:
     int id;
     int col;
     int row;
-    int surface;
-    int thickness;
-    int bed;
-    std::string geom;
 };
 
 // Class used to store/retrieve data from database.
@@ -30,15 +27,6 @@ public:
     // Process a single row from the database.
     DbData processDbRow(pqxx::result::tuple row);
 
-    // Process multiple rows from the database.
-    std::vector<DbData> processDbRows(pqxx::result& res);
-
-    // Retrieves all points from the database.
-    std::vector<DbData> getAllPoints();
-
-    // Retrieves all points contained in the rectangle with specified corners.
-    std::vector<DbData> getPointsInRectangle(int col1, int row1, int col2,
-            int row2);
 };
 
 #endif // DATASTORE_H
