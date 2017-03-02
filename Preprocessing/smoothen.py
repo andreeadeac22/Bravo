@@ -14,60 +14,42 @@ import os.path
 from pg import DB
 from PIL import Image
 
-def delete_point(id, surface,no_del):
-    no_del = no_del +1
-    """
-    print id, surface, "delete"
-    sql = 'DELETE * FROM data WHERE row= %d AND col = %d'
-    sql = sql % (x,y)
-
-    db.query(sql)
-    """
-
-
-def insert_point(id, surface, no):
-    no = no +1
-    print id, surface, "insert"
-    """
-    sql = 'INSERT INTO data(id,row,col,surface) VALUES (%d,%d,%d,%f)'
-    sql = sql % (_id, row, col, surface)
-    with open('data/(%d, %d).txt' % (x, y), 'wb') as f:
-        f.write(surface)
-    db.query(sql)
-    """
 
 no_steps= 10
 db = DB(dbname='grpproj', host='localhost', user=sys.argv[1])
-min_threshold = 50
-max_threshold = 1
+min_threshold = 10
+max_threshold = 1000000
+
+
 width = height = 500
 
-total_no =0
 
-#file = sys.argv[1]
+clear_table = 'DELETE FROM data'
+db.query(clear_table)
 
 for u in range(0, 25500, 500):           #iterate through all decompressed files
     for v in range( 1000, 20500, 500):
-        no=0
-        no_del =0
         file = 'decomp_data/(%d,%d)' % (u,v)  # check if file exists
         if os.path.isfile(file):
-            data = np.fromfile(file)   #put data from file in array
+            f = open(file,"r")
+            data = np.fromfile(f, dtype=np.uint32)   #put data from file in array
+            f.close()
             for i in range(0,len(data)):
                     if i>0:
-                        y=data[i]
-                        if not math.isnan(y):
-                            y= int(y)
+                        if i < len(data) and not math.isnan(data[i]):
+                            y= int(data[i])
                             if y-x > max_threshold:   # close to edge
                                 step_size = int((y-x)/no_steps)
                                 for step in range(x + step_size,y, step_size): #add intermediary values for higher density
-                                    insert_point(i,step,no)
+                                    i=i+1
+                                    data = np.insert(data,i,step)
                             else:
                                 if y-x < min_threshold:
-                                    delete_point(i,y, no_del) # nothing happens, can have sparse data
-                    x=data[i]
-                    if not math.isnan(x):
-                        x= int(x)
-            if no > 0:
-                total_no = total_no +1
-print total_no
+                                    data= np.delete(data,i) # nothing changes, can have sparse data
+                                    i=i-1
+                    if i< len(data ) and not math.isnan(data[i]):
+                        x= int(data[i])
+            print len(data)
+            f= open(file,"w")
+            f.write(data)
+            f.close()
