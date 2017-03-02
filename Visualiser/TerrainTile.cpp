@@ -352,12 +352,20 @@ void StaticIceTile::setHeightMap(HeightMap *heightMap)
             uint32_t itl = x * vertexCount + (y + 1);
             uint32_t itr = (x + 1) * vertexCount + (y + 1);
 
-            faces->push_back(ibl);
-            faces->push_back(ibr);
-            faces->push_back(itl);
-            faces->push_back(ibr);
-            faces->push_back(itr);
-            faces->push_back(itl);
+//            bool sbl = !heightMap->getSkip(x, y);
+//            bool sbr = !heightMap->getSkip(x + 1, y);
+//            bool stl = !heightMap->getSkip(x, y + 1);
+//            bool str = !heightMap->getSkip(x + 1, y + 1);
+
+//            if (sbl && sbr && stl && str) {
+            if (heightMap->getShowFace(x, y)) {
+                faces->push_back(ibl);
+                faces->push_back(ibr);
+                faces->push_back(itl);
+                faces->push_back(ibr);
+                faces->push_back(itr);
+                faces->push_back(itl);
+            }
         }
     }
 

@@ -11,7 +11,8 @@ protected:
     enum HType {
         TYPE_ICE,
         TYPE_WATER,
-        TYPE_BOUNDARY
+        TYPE_BOUNDARY,
+        TYPE_SKIP
     };
 
 public:
@@ -37,11 +38,29 @@ public:
         return sample_spacing;
     }
 
+    void setSkip(int x, int y) {
+        types.get(x, y) = TYPE_SKIP;
+    }
+
+    bool getSkip(int x, int y) const {
+        return types.get(x, y) == TYPE_SKIP;
+    }
+
+    void setShowFace(int x, int y, bool show) {
+        showFace.get(x, y) = show;
+    }
+
+    bool getShowFace(int x, int y) const {
+        return showFace.get(x, y);
+    }
+
     /** Scan the samples and find ice-water boundaries **/
     virtual void calcBoundaries();
 
 protected:
     Array2D<HType> types;
+
+    Array2D<bool> showFace;
 
     float tile_width;
     float sample_spacing;

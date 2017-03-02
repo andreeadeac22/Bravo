@@ -39,7 +39,9 @@ SOURCES += main.cpp \
     AsyncTerrainUpdater.cpp \
     KeyboardController.cpp \
     ../Datastore/datastore.cpp \
-    ../Datastore/TileStore.cpp
+    ../Datastore/TileStore.cpp \
+    CrackSegment.cpp \
+    AxisAlignedBoundingBox.cpp
 
 HEADERS += \
     util/AtomicQueue.h \
@@ -52,7 +54,9 @@ HEADERS += \
     ../Datastore/datastore.h \
     ../Datastore/TileStore.h \
     util/AsyncJobHandler.h \
-    util/Array2d.h
+    util/Array2d.h \
+    CrackSegment.h \
+    AxisAlignedBoundingBox.h
 
 unix {
     system(mkdir -p build)

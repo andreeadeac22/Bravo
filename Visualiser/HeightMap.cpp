@@ -3,9 +3,14 @@
 using namespace osg;
 
 HeightMap::HeightMap(int count, float t_width)
-    : types(count + 2, count + 2), tile_width(t_width),
+    : types(count + 2, count + 2), showFace(count - 1, count - 1), tile_width(t_width),
       sample_spacing(tile_width / (float)(count - 1))
 {
+    for (int x = 0; x < count - 1; x++) {
+        for (int y = 0; y < count - 1; y++) {
+            showFace.get(x, y) = true;
+        }
+    }
 }
 
 osg::Vec3 HeightMap::getNormal(int x, int y) const
