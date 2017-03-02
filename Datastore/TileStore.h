@@ -7,7 +7,7 @@
 #include <pqxx/pqxx>
 #include "datastore.h"
 
-#define TILE_SIZE 512
+#define TILE_SIZE 500
 
 class SquareTile : public DbData{
  public:
