@@ -41,7 +41,10 @@ SOURCES += main.cpp \
     ../Datastore/datastore.cpp \
     ../Datastore/TileStore.cpp \
     CrackSegment.cpp \
-    AxisAlignedBoundingBox.cpp
+    AxisAlignedBoundingBox.cpp \
+    SurfaceVertexSet.cpp \
+    LineSegment.cpp \
+    util/Mat2x2.cpp
 
 HEADERS += \
     util/AtomicQueue.h \
@@ -56,7 +59,10 @@ HEADERS += \
     util/AsyncJobHandler.h \
     util/Array2d.h \
     CrackSegment.h \
-    AxisAlignedBoundingBox.h
+    AxisAlignedBoundingBox.h \
+    SurfaceVertexSet.h \
+    LineSegment.h \
+    util/Mat2x2.h
 
 unix {
     system(mkdir -p build)

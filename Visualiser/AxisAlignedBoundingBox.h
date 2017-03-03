@@ -1,6 +1,4 @@
-#ifndef AXISALIGNEDBOUNDINGBOX_H
-#define AXISALIGNEDBOUNDINGBOX_H
-
+#pragma once
 #include <osg/Vec2>
 
 /**
@@ -35,5 +33,3 @@ private:
     float ey;
 
 };
-
-#endif // AXISALIGNEDBOUNDINGBOX_H

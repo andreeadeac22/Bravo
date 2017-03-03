@@ -35,6 +35,7 @@ COpyright (c) Franclin Foping franclin@netcourrier.com
 #include "KeyboardController.h"
 
 #include "CrackSegment.h"
+#include "LineSegment.h"
 
 #include <iostream>
 #include <algorithm>
@@ -314,7 +315,7 @@ void tester(ref_ptr<Group> scene)
         }
     }
 
-    CrackSegment seg = { Vec2(5, 5), 1, 5, Vec2(8, 1), 2, 5 };
+    CrackSegment seg = { Vec2(4, 8), 1, 5, Vec2(9, 3), 4, 5 };
 
     test_drawSeg(scene, seg);
 
@@ -329,6 +330,14 @@ void tester(ref_ptr<Group> scene)
 }
 
 int main()
+{
+    LineSegment seg1(Vec2(0, 0), Vec2(0, 10));
+    LineSegment seg2(Vec2(-5, 5), Vec2(5, 15.1));
+
+    log_info << "Collide ? = " << seg1.intersects(seg2) << std::endl;
+}
+
+int main_old()
 {
     osgViewer::Viewer viewer;
     ref_ptr<Group> scene(new Group);
