@@ -21,7 +21,7 @@ from base64 import b64encode
 from snappy import uncompress
 
 for u in range(0, 25500, 500):
-    for v in range( 1000, 20500, 500):   # iterate through all snappy files in data directory
+    for v in range( 0, 20500, 500):   # iterate through all snappy files in data directory
         file= 'data/(%d, %d).snappy' % (u,v)
         if os.path.isfile(file):
             _if = file
@@ -41,7 +41,7 @@ _id =0
 
 
 for u in range(0, 25500, 500):           #iterate through all decompressed files
-    for v in range( 1000, 20500, 500):
+    for v in range( 0, 20500, 500):
         file = 'decomp_data/(%d,%d)' % (u,v)  # check if file exists
         if os.path.isfile(file):
             f = open(file,"r")
