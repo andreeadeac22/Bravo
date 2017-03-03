@@ -3,6 +3,7 @@
     Decompress a snappy file, in the format that we're storing it. This is because
     we're using a slightly different format to the snappy command line tool.
     
+    Assumptions: Already ran geotiff2postgres.py and created decomp_data directory.
     Usage: ./decompress.py <in file> <out file>
     """
 import sys
