@@ -13,11 +13,13 @@ import snappy
 import numpy as np
 
 from pg import DB
-from PIL import Image
+#from PIL import Image
 from base64 import b64encode
 from osgeo import gdal
+from scipy.misc import imresize
 
 def store_img(_id, x, y, data):
+    data = imresize(data, (128, 128))
     compressed_data = snappy.compress(frame_data.tobytes())
 
     sql = 'INSERT INTO data (id, row, col, data) VALUES (%d, %d, %d, decode(\'%s\', \'base64\'))'
@@ -31,7 +33,7 @@ def store_img(_id, x, y, data):
 
 
 # avoid a DecompressionBombWarning
-Image.MAX_IMAGE_PIXELS = 1000000000
+#Image.MAX_IMAGE_PIXELS = 1000000000
 
 #img = Image.open(sys.argv[1])
 img = gdal.Open(sys.argv[1])
