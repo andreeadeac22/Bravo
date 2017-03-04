@@ -15,6 +15,7 @@ import numpy as np
 from pg import DB
 from PIL import Image
 from base64 import b64encode
+from osgeo import gdal
 
 def store_img(_id, x, y, data):
     compressed_data = snappy.compress(frame_data.tobytes())
@@ -32,8 +33,9 @@ def store_img(_id, x, y, data):
 # avoid a DecompressionBombWarning
 Image.MAX_IMAGE_PIXELS = 1000000000
 
-img = Image.open(sys.argv[1])
-data = np.asarray(img)
+#img = Image.open(sys.argv[1])
+img = gdal.Open(sys.argv[1])
+data = np.array(img.GetRasterBand(1).ReadAsArray())
 
 width, height = data.shape
 
