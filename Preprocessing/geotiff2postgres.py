@@ -30,6 +30,8 @@ def store_img(_id, x, y, data):
     with open('data/(%d, %d).snappy' % (x, y), 'wb') as f:
         f.write(compressed_data)
 
+    db.query(sql)
+
 
 # avoid a DecompressionBombWarning
 #Image.MAX_IMAGE_PIXELS = 1000000000
