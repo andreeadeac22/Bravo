@@ -17,9 +17,11 @@ from pg import DB
 from base64 import b64encode
 from osgeo import gdal
 from scipy.misc import imresize
+import matplotlib.pyplot as plt
+from skimage.transform import downscale_local_mean
 
 def store_img(_id, x, y, data):
-    compressed_data = snappy.compress(frame_data.tobytes())
+    compressed_data = snappy.compress(data.tobytes())
 
     sql = 'INSERT INTO data (id, row, col, data) VALUES (%d, %d, %d, decode(\'%s\', \'base64\'))'
     sql = sql % (_id, y, x, b64encode(compressed_data))
@@ -28,16 +30,16 @@ def store_img(_id, x, y, data):
     with open('data/(%d, %d).snappy' % (x, y), 'wb') as f:
         f.write(compressed_data)
 
-    db.query(sql)
-
 
 # avoid a DecompressionBombWarning
 #Image.MAX_IMAGE_PIXELS = 1000000000
 
 #img = Image.open(sys.argv[1])
 img = gdal.Open(sys.argv[1])
-data = np.array(img.GetRasterBand(1).ReadAsArray(), dtype=np.uint8)
-data = imresize(data, (12800, 12800))
+data = np.array(img.GetRasterBand(1).ReadAsArray())
+data = downscale_local_mean(data, (100, 100))
+data = data.astype(np.uint16)
+print data.dtype, data.shape
 
 width, height = data.shape
 
