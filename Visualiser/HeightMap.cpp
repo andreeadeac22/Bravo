@@ -6,6 +6,12 @@ HeightMap::HeightMap(int count, float t_width)
     : types(count + 2, count + 2), tile_width(t_width),
       sample_spacing(tile_width / (float)(count - 1))
 {
+    //Initialise types
+    for (int x = 0; x < types.width(); x++) {
+        for (int y = 0; y < types.width(); y++) {
+            types.get(x, y) = TYPE_ICE;
+        }
+    }
 }
 
 osg::Vec3 HeightMap::getNormal(int x, int y) const
@@ -117,6 +123,11 @@ GridHeightMap::GridHeightMap(int count, float t_width)
     : HeightMap(count, t_width), heights(count + 2, count + 2)
 
 {
+    for (int x = 0; x < heights.width(); x++) {
+        for (int y = 0; y < heights.width(); y++) {
+            heights.get(x, y) = 0.0f;
+        }
+    }
 }
 
 /** Set properties for a sample */
