@@ -11,35 +11,45 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+MAXDEPTH = -250
+
+def pickColumn(row):
+	"""We specify the column we care about in the argv[] and for every row, pick that."""
+	if len(sys.argv) >= 2:
+		if sys.argv[1] == "Bed":
+			return row.Bed
+		elif sys.argv[1] == "Surface":
+			return row.Surface
+	#return Thickness by default
+	return row.Thickness
+
 if __name__ == '__main__':
-    df = pd.read_csv('output.csv')
+    datafile = pd.read_csv('output.csv')
+    assert datafile is not None
 
-    w = df.Col.max() - df.Col.min() + 1
-    h = df.Row.max() - df.Row.min() + 1
+    width = datafile.Col.max() - datafile.Col.min() + 1
+    height = datafile.Row.max() - datafile.Row.min() + 1
+    
+    assert width > 0
+    assert heigth > 0
 
-    offset_w = df.Col.min()
-    offset_h = df.Row.min()
+    offset_width = datafile.Col.min()
+    offset_height = datafile.Row.min()
+    
+    assert offset_width is not None
+    assert offset_width is not 0
+    assert offset_height is not None
+    assert offset_heigth is not 0
 
-    matrix = np.zeros((w, h))
+    matrix = np.zeros((width, height))
 
-    data = {}
-
-    for i, row in df.iterrows():
-        if len(sys.argv) < 2:
-            data = row.Thickness
-        elif sys.argv[1] == 'Bed':
-            data = row.Bed
-        elif sys.argv[1] == 'Thickness':
-            data = row.Thickness
-        elif sys.argv[1] == 'Surface':
-            data = row.Surface
-        else:
-            data = row.Thickness
-
-        if data < -5000:
+    for i, row in datafile.iterrows():
+    	data = pickColumn(row)
+    	assert data is not None
+        # remove large negatives to increase contrast: we only care about up to MAXDEPTH m
+        if data < MAXDEPTH:
             data = 0
-
-        matrix[row.Col - offset_w, row.Row - offset_h] = data
+        matrix[row.Col - offset_width, row.Row - offset_height] = data
 
     plt.imshow(matrix,cmap='hot',interpolation='nearest')
     plt.show()
