@@ -52,7 +52,7 @@ data = data.astype(np.uint16)
 ridge = 20
 mountain = 50
 data[data < ridge] /= 2
-data[(data > ridge) & (data < mountain)] += 100
+data[(data > ridge) & (data < mountain)] += 250
 data = median(data, disk(10))
 data = data.astype(np.uint16)
 print data.dtype, data.shape
