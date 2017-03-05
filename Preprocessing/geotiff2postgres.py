@@ -62,6 +62,7 @@ print data.dtype, data.shape
 width, height = data.shape
 
 # Python Geospatial Development Essentials (page 36: GeoTIFF)
+## Width and height of a tile.
 box_size = 128
 
 db = DB(dbname='grpproj', host='localhost', user=sys.argv[2])
