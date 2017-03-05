@@ -24,6 +24,9 @@ from skimage.filters.rank import median
 from skimage.morphology import disk
 
 def store_img(_id, x, y, data):
+    """
+        Compress each tile into a snappy file and insert it as a new record in the data table.
+    """
     compressed_data = snappy.compress(data.tobytes())
 
     sql = 'INSERT INTO data (id, row, col, data) VALUES (%d, %d, %d, decode(\'%s\', \'base64\'))'
