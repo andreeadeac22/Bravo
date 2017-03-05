@@ -12,12 +12,12 @@ import sys
 import snappy
 import numpy as np
 
+from psycopg2 import connect
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pg import DB
-#from PIL import Image
 from base64 import b64encode
 from osgeo import gdal
 from scipy.misc import imresize
-#import matplotlib.pyplot as plt
 from skimage.transform import downscale_local_mean
 from scipy.special import expit
 from skimage.filters.rank import median
@@ -37,6 +37,34 @@ def store_img(_id, x, y, data):
         f.write(compressed_data)
 
     db.query(sql)
+
+def check_database(db_name, db_user):
+    """
+        Check if database grpproj exists and create it if it doesn't
+    """
+    ## Set connection to the default postgres database
+    con = connect(dbname='postgres', user=db_user, host='localhost')
+    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cur = con.cursor()
+    cur.execute( "SELECT EXISTS(SELECT FROM pg_catalog.pg_database WHERE lower(datname) = lower(%s))",(db_name,))
+    if not cur.fetchone()[0]:
+        cur.execute('CREATE DATABASE ' + db_name)
+    con.commit()
+    con.close()
+
+def check_table(db_name, table_name, db_user):
+    """
+        Check if table data exists in database grpproj and create it if it doesn't
+    """
+    ## Set connection to the grpproj database
+    con = connect(dbname=db_name, user=db_user, host='localhost')
+    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cur = con.cursor()
+    cur.execute("select exists(select * from information_schema.tables where table_name=%s and table_catalog=%s)", (table_name,db_name,))
+    if not cur.fetchone()[0]:
+        cur.execute("CREATE TABLE IF NOT EXISTS data ( id integer, row integer, col integer, data bytea )")
+    con.commit()
+    con.close()
 
 
 # avoid a DecompressionBombWarning
@@ -65,7 +93,17 @@ width, height = data.shape
 ## Width and height of a tile.
 box_size = 128
 
-db = DB(dbname='grpproj', host='localhost', user=sys.argv[2])
+## The user of the PostgreSQL database is given as an argument
+db_user = sys.argv[2]
+## The database name must be grpproj
+db_name = 'grpproj'
+## The table name must be data
+table_name = 'data'
+
+check_database(db_name, db_user)
+check_table(db_name, table_name, db_user)
+
+db = DB(dbname='grpproj', host='localhost', user=db_user)
 clean_sql = 'DELETE FROM data'
 db.query(clean_sql)
 
