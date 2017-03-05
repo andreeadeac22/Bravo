@@ -36,7 +36,7 @@ def store_img(_id, x, y, data):
     # write the data out to file too, so that we don't have to recompute it all
     with open('data/(%d, %d).snappy' % (x, y), 'wb') as f:
         f.write(compressed_data)
-
+    
     db.query(sql)
 
 def check_database(db_name, db_user):
@@ -44,7 +44,9 @@ def check_database(db_name, db_user):
         Check if database grpproj exists and create it if it doesn't
     """
     ## Set connection to the default postgres database
-    con = connect(dbname='postgres', user=db_user, host='localhost')
+    # How to instantiate it depends on how PostgreSQL was installed
+    # Alternative: con = connect(dbname='postgres', user=db_user, host='localhost')
+    con = connect(dbname='postgres', user=db_user, host="/tmp/")
     con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     cur = con.cursor()
     cur.execute( "SELECT EXISTS(SELECT FROM pg_catalog.pg_database WHERE lower(datname) = lower(%s))",(db_name,))
@@ -58,7 +60,9 @@ def check_table(db_name, table_name, db_user):
         Check if table data exists in database grpproj and create it if it doesn't
     """
     ## Set connection to the grpproj database
-    con = connect(dbname=db_name, user=db_user, host='localhost')
+    # How to instantiate it depends on how PostgreSQL was installed
+    # Alternative: con = connect(dbname=db_name, user=db_user, host='localhost')
+    con = connect(dbname=db_name, user=db_user, host="/tmp")
     con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     cur = con.cursor()
     cur.execute("select exists(select * from information_schema.tables where table_name=%s and table_catalog=%s)", (table_name,db_name,))
@@ -68,25 +72,17 @@ def check_table(db_name, table_name, db_user):
     con.close()
 
 
-# avoid a DecompressionBombWarning
-#Image.MAX_IMAGE_PIXELS = 1000000000
-
-#img = Image.open(sys.argv[1])
 img = gdal.Open(sys.argv[1])
 data = np.array(img.GetRasterBand(1).ReadAsArray())
 data = downscale_local_mean(data, (10, 10))
 data = data.astype(np.uint16)
 
-
 ridge = 20
 mountain = 50
-data[data < ridge] /= 2
+data[data <= ridge] /= 2
 data[(data > ridge) & (data < mountain)] += 250
 data = median(data, disk(10))
 data = data.astype(np.uint16)
-print data.dtype, data.shape
-#plt.imshow(data)
-#plt.show()
 
 width, height = data.shape
 
