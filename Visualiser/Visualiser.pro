@@ -1,7 +1,9 @@
+QT += core
+QT += multimedia
+
 TEMPLATE = app
 CONFIG += console c++14
 CONFIG -= app_bundle
-CONFIG -= qt
 
 LIBS += -lpqxx -lsnappy -lm -ldl -lpthread -losg -losgGA -losgDB -losgViewer -losgSim -losgUtil -losgShadow -lOpenThreads
 
@@ -57,3 +59,6 @@ HEADERS += \
 unix {
     system(mkdir -p build)
 }
+
+RESOURCES += \
+    res.qrc

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/sounds">
+        <file>wind.wav</file>
+    </qresource>
+</RCC>

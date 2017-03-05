@@ -5,7 +5,7 @@
 Convert an input (Geo)TIFF file to ESRI data. 
 It works on Python2, but it might give errors on Python3.
 
-Assumptions: Database grpproj and table data (with columns id(integer), row(integer), col(integer), data(bytea)) already exist. Also there is a folder data where snappy files will be saved. 
+Assumptions: Tthere is a folder data where snappy files will be saved. 
 
 Usage: ./geotiff2postgres.py <tiff file> <postgres user>
 """
@@ -36,7 +36,6 @@ def store_img(_id, x, y, data):
     # write the data out to file too, so that we don't have to recompute it all
     with open('data/(%d, %d).snappy' % (x, y), 'wb') as f:
         f.write(compressed_data)
-    
     db.query(sql)
 
 def check_database(db_name, db_user):

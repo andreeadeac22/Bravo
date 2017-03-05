@@ -21,6 +21,7 @@
 #include <osgGA/TerrainManipulator>
 #include <osgGA/FlightManipulator>
 
+ #include <QMediaPlayer>
 
 #include "util/Array2d.h"
 #include "util/log.h"
@@ -87,6 +88,11 @@ int main()
     Vec3d cam_eye;
     Vec3d cam_center;
     Vec3d cam_up;
+
+    //play background music
+    QMediaPlayer *music = new QMediaPlayer();
+    music->setMedia(QUrl("qrc:/sounds/wind.wav"));
+    music->play();
 
     while (!viewer.done()) {
 
