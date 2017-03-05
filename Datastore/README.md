@@ -46,6 +46,12 @@ When trying to copy data from file in psql,
 Postgres ERROR: could not open file for reading: Permission denied
 Solution 3: http://stackoverflow.com/questions/19463074/postgres-error-could-not-open-file-for-reading-permission-denied
 
+Problem 4: 
+When trying to run the Visualizer, 
+privilege: ERROR:  permission denied for relation data
+Solution 4:
+ALTER TABLE data OWNER TO user_name;
+GRANT ALL PRIVILEGES ON TABLE data TO user_name;
 
 
 Essential links: 
