@@ -1,3 +1,5 @@
+## @file
+
 """
 This script reads three .txt files, ESRI grids for the Surface (Elevation) of ice,
 ice thickness, and the ice bed (hard rock beneath the ice).
@@ -13,15 +15,16 @@ python FullERIS2crstb.py bedmap2_surface.txt
 import sys
 
 arguments = sys.argv
+## @test Test there are 5 arguments provided
 assert len(arguments) == 5
 
-# open the file containing the ESRI grid of surface elevation
+## open the file containing the ESRI grid of surface elevation
 surface = open (arguments[1], 'r')
-# ESRI grid of ice thickness
+## ESRI grid of ice thickness
 thickness = open (arguments[2], 'r')
-# ESRI grid of the depth of the bed rock that is under the ice
+## ESRI grid of the depth of the bed rock that is under the ice
 bed = open (arguments[3], 'r')
-# The configuration file specifies the coordinates of the starting point
+## The configuration file specifies the coordinates of the starting point
 # As well as the dimensions of the segment that is processed
 conf = open (arguments[4], 'r')
 begy, begx = int(conf.readline().split()[1]), int(conf.readline().split()[1])

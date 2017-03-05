@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+## @file
+
 """
 Convert an input (Geo)TIFF file to ESRI data. For some reason I get errors when
 I tried to run this on my installation of Python3, but it works on Python2 ¯\_(ツ)_/¯
@@ -8,6 +10,7 @@ Assumptions: Database grpproj and table data (with columns id(integer), row(inte
 
 Usage: ./geotiff2postgres.py <tiff file> <postgres user>
 """
+
 import sys
 import snappy
 import numpy as np
@@ -21,6 +24,9 @@ import matplotlib.pyplot as plt
 from skimage.transform import downscale_local_mean
 
 def store_img(_id, x, y, data):
+    """
+        Compress each tile into a snappy file and insert it as a new record in the data table.
+    """
     compressed_data = snappy.compress(data.tobytes())
 
     sql = 'INSERT INTO data (id, row, col, data) VALUES (%d, %d, %d, decode(\'%s\', \'base64\'))'
@@ -37,6 +43,7 @@ def store_img(_id, x, y, data):
 #Image.MAX_IMAGE_PIXELS = 1000000000
 
 #img = Image.open(sys.argv[1])
+## Open the BigTIFF file
 img = gdal.Open(sys.argv[1])
 data = np.array(img.GetRasterBand(1).ReadAsArray())
 data = downscale_local_mean(data, (100, 100))
@@ -46,6 +53,7 @@ print data.dtype, data.shape
 width, height = data.shape
 
 # Python Geospatial Development Essentials (page 36: GeoTIFF)
+## Width and height of a tile
 box_size = 128
 
 db = DB(dbname='grpproj', host='localhost', user=sys.argv[2])

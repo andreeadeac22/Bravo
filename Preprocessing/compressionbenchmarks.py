@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+## @file
 """
 Perform multiple compression benchmarks.
 
 Usage: ./geotiff2postgres.py <tiff file> 
 """
+
 import sys
 import time
 import snappy

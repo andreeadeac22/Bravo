@@ -1,3 +1,4 @@
+## @file
 """
 Look at the data output from the ESRI preprocessor.
 
@@ -5,6 +6,7 @@ Usage:
 
 python3 look.py [Thickness|Bed|Surface]
 """
+
 import sys
 
 import matplotlib.pyplot as plt
@@ -29,7 +31,7 @@ if __name__ == '__main__':
 
     width = datafile.Col.max() - datafile.Col.min() + 1
     height = datafile.Row.max() - datafile.Row.min() + 1
-    
+    ## @test Check that the width and the height are positive
     assert width > 0
     assert heigth > 0
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+## @file
 
 """
     This file iterates through all the decompressed snappy files (which are stored in decomp_data directory after running decompress_all.py) and all the points in each file. For each consecutive pair of height, it computes the difference and if it is too close, it deletes the point, while if it is too far, it adds additional points with heights in that interval. 
