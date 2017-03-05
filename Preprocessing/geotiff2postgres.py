@@ -59,9 +59,13 @@ box_size = 128
 db = DB(dbname='grpproj', host='localhost', user=sys.argv[2])
 _id = 0
 
-bottom_threshold = 25
+bottom_threshold = 16
 normal_threshold = 50
 top_threshold = 100
+
+clean_sql = 'DELETE FROM data'
+db.query(clean_sql)
+data.flags.writeable = True
 
 # we'll break down the image into (up to) 500px*500px chunks
 for x in range(0, width, box_size):
@@ -71,6 +75,8 @@ for x in range(0, width, box_size):
         for u in range(x, x+frame_width):
             for v in range(y,y+frame_height):
                 """ Applying median filter"""
+                """
+                    Bad if apply on whole tiff. Need a way to apply it only outside crack.
                 point_height1= data[max(u-1,0), max(v-1,0)]
                 point_height2 = data[max(u-1,0), v]
                 point_height3 = data[max(u-1,0), min(v+1,box_size-1)]
@@ -86,14 +92,14 @@ for x in range(0, width, box_size):
                 filt_array = np.array([point_height1, point_height2, point_height3, point_height4, point_height5, point_height6, point_height7, point_height8, point_height9])
                     
                 point_height = np.median(filt_array)
-                
+                """
+                point_height = data[u,v]
                 if point_height > bottom_threshold and point_height <normal_threshold:
                     data[u,v] = data[u,v] *2
-                if point_height < bottom_threshold:
+                if point_height <= bottom_threshold:
                     data[u,v]= data[u,v]/2
                 if point_height >top_threshold:
                     data[u,v]= top_threshold
-        sys.exit()
         frame_data = data[x:x+frame_width,y:y+frame_height]
         if np.count_nonzero(frame_data) >0:
             store_img(_id, x, y, frame_data)
