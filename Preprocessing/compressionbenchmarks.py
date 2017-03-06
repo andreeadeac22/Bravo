@@ -61,7 +61,7 @@ def benchmark(data):
     data = data.tobytes()
     assert data is not None
     
-    # please note that we are aggregating over different datas coming
+    # NOTE: we are aggregating over different data coming
     # from different (boxsize x boxsize px) chunks in the image
     benchmark_one(data, snappy, snappy_res, snappy_de_res, snappy_sizes)
     benchmark_one(data, zlib, gz_res, gz_de_res, gz_sizes)
@@ -85,11 +85,11 @@ data = np.asarray(img)
 width, height = data.shape
 print(len(data.tobytes()))
 sys.exit(0)
-## our chunks are box_size x box_size px
+## our chunks are (box_size)px * (box_size)px
 box_size = 500
 
 
-# break down the image into box_size x box_size chunks (smaller near borders)
+# break down the image into (box_size) x (box_size) chunks (smaller near borders)
 # and use each chunk as a data
 for x in range(0, width, box_size):
     for y in range(0, height, box_size):
@@ -112,4 +112,3 @@ print_results('BZ2 COMP', bz2_res, bz2_sizes)
 print_results('BZ2 DECOMP', bz2_de_res, bz2_sizes)
 print_results('LZMA COMP', lzma_res, lzma_sizes)
 print_results('LZMA DECOMP', lzma_de_res, lzma_sizes)
-
