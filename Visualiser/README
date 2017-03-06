@@ -1,0 +1,26 @@
+Usage:
+
+./Visualiser <dbname> <tilewidth> <tilesx> <tilesy>
+
+* <dbname> is the name of the postgres database in which the tile data is stored
+* <tilewidth> is the (integer) width of a tile in the database, (for example 128 means that the tiles were loaded as 128x128)
+* <tilesx> is the number of tiles stored in X (i.e. the width of the stored scene) to load
+* <tllesy> is respectively the height. 
+
+If the database is called "bravodb", and there are 33x33 tiles each containing 128x128 heights in the database;
+
+./Visualiser bravodb 128 33 33
+
+Dependencies:
+
+* OpenSceneGraph - Used to handling all the low level OpenGL operations
+* pqxx - Used to load data from the postgres server (datastore)
+* snappy - Used to decompress data from the datastore
+* Qt - Used to run sound files along side the visualisation
+
+Building:
+
+Can build the visualiser by running:
+
+qmake Visualiser.pro
+make
