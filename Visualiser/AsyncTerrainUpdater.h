@@ -18,10 +18,15 @@
 class TerrainUpdater
 {
 public:
+    struct UpdateJob {
+        TerrainTile* tile;
+        HeightMap* heightMap;
+    };
+
     TerrainUpdater() {}
 
-    void process(TerrainTile* tile);
+    void process(UpdateJob job);
 
 };
 
-typedef AsyncJobHandler<TerrainUpdater, TerrainTile*> AsyncTerrainUpdater;
+typedef AsyncJobHandler<TerrainUpdater, TerrainUpdater::UpdateJob> AsyncTerrainUpdater;

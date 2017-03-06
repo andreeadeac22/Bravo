@@ -32,6 +32,12 @@ public:
     virtual void show();
     virtual void hide();
 
+    /**
+     * @brief Update the distance to the eye
+     * @param dist
+     */
+    virtual void updateEyeDist(float dist) { }
+
     virtual void setHeightMap(HeightMap *heightMap) {
         throw "This terrain tile does not accept height maps";
     }
@@ -67,6 +73,11 @@ protected:
     const osg::Vec2s tile_coords;
 
     bool generated;
+
+    /**
+     * @brief Set the geometry for this tile (replaces current set geometry)
+     */
+    virtual void setModel(osg::ref_ptr<osg::Geometry> geom);
 
 };
 
@@ -104,6 +115,15 @@ public:
     StaticIceTile(float t_width, osg::Vec2s coords);
 
     virtual void setHeightMap(HeightMap *heightMap);
+
+    virtual void updateEyeDist(float dist);
+
+private:
+    osg::ref_ptr<osg::Geometry> geomFull;
+    osg::ref_ptr<osg::Geometry> geomReduced;
+
+    void render(IHeightMap *heightMap, osg::Geometry* geometry);
+
 };
 
 /**
