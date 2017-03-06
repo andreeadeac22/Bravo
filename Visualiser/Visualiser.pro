@@ -20,8 +20,9 @@ macx {
     LIBS += -L/opt/local/lib -L/usr/local/lib
     INCLUDEPATH += /usr/local/include
     QMAKE_CXXFLAGS -= -mmacosx-version-min=10.6
-    QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++14 -stdlib=libc++
     QMAKE_LFLAGS -= -mmacosx-version-min=10.6
+    # If c++14 is not recorgnised, change two lines to -std=c++11
+    QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++14 -stdlib=libc++
     QMAKE_LFLAGS += -mmacosx-version-min=10.7 -std=c++14 -stdlib=libc++
     QMAKE_CXXFLAGS_WARN_ON = -Wall -Wextra -pedantic -Wno-unused-parameter
 }
