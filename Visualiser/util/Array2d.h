@@ -2,6 +2,8 @@
 
 #include "util/log.h"
 
+#include <cstring>
+
 #include <functional>
 
 template <class T>
@@ -60,6 +62,10 @@ public:
                 del(x, y, this->get(x, y));
             }
         }
+    }
+
+    void copyFrom(const T* raw, size_t len) {
+        memcpy(data, raw, len);
     }
 
 private:

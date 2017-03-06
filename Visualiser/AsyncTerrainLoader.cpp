@@ -47,7 +47,7 @@ void AsyncTerrainLoader::run_thread()
     //TODO: Get all constants from elsewhere
     float tile_width = (float)tileVertWidth;
 
-    TileStore tl(dbname);
+    TileStore tl(dbname, tileVertWidth);
 
     while (running && remainingTiles() > 0) {
         updateCenter();

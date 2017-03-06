@@ -7,27 +7,31 @@
 #include <pqxx/pqxx>
 #include "datastore.h"
 
-#define TILE_SIZE 128
+#include "util/Array2d.h"
 
 class SquareTile : public DbData{
  public:
-    SquareTile(int id, int row, int col, const char* data, const size_t length);
+    SquareTile(int id, int row, int col, int tileVertWidth, const char* data, const size_t length);
 
     float getHeightAt(int x, int y);
 
  private:
-    std::uint16_t raw[TILE_SIZE][TILE_SIZE];
+    Array2D<uint16_t> raw;
 };
 
 class TileStore : Datastore {
- public:
-    TileStore(const std::string dbname);
+public:
+    TileStore(const std::string dbname, int tileVWidth);
 
     SquareTile* processDbRow(pqxx::result::tuple row);
 
     SquareTile* getTileById(int id);
 
     SquareTile* getTileAt(int x, int y);
+
+private:
+    int tileVertWidth;
+
 };
 
 #endif  // TILESTORE_H
