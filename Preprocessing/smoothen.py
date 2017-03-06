@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ## @file
-# This file iterates through all the decompressed snappy files (which are stored in decomp_data directory after running decompress_all.py) and all the points in each file. For each consecutive pair of height, it computes the difference and if it is too close, it deletes the point, while if it is too far, it adds additional points with heights in that interval.
+# This file iterates through all the decompressed snappy files (which are stored in decomp_data directory after running decompress_all.py) and all the points in each file. 
+# For each consecutive pair of heights: if the difference of heights is small, delete the point. If large - add extra points with heights in that interval.
 # Assumptions: Already ran geotiff2posgres.py, created sdata directory and created table sdata with same columns as table data
 # Usage: ./smoothen.py postgres
 # Output: New snappy files should now be in sdata directory and sdata should be populated
@@ -37,18 +38,18 @@ max_threshold = 1000000
 _id =0
 
 
-for u in range(0, 25500, 500):           #iterate through all decompressed files
+for u in range(0, 25500, 500):                       # iterate through all decompressed files
     for v in range( 0, 20500, 500):
-        file = 'decomp_data/(%d,%d)' % (u,v)  # check if file exists
+        file = 'decomp_data/(%d,%d)' % (u,v)         # check if file exists
         if os.path.isfile(file):
             f = open(file,"r")
-            data = np.fromfile(f, dtype=np.uint32)   #put data from file in array
+            data = np.fromfile(f, dtype=np.uint32)   # put data from file in array
             f.close()
             for i in range(0,len(data)):
                     if i>0:
                         if i < len(data) and not math.isnan(data[i]):
                             y= int(data[i])
-                            if y-x > max_threshold:   # close to edge
+                            if y-x > max_threshold:  # close to edge
                                 step_size = int((y-x)/no_steps)
                                 for step in range(x + step_size,y, step_size): #add intermediary values for higher density
                                     i=i+1
@@ -64,7 +65,7 @@ for u in range(0, 25500, 500):           #iterate through all decompressed files
             sql = 'INSERT INTO sdata (id, row, col, data) VALUES (%d, %d, %d, decode(\'%s\', \'base64\'))'
             sql = sql % (_id, v, u, b64encode(compressed_data))
 
-            # write the data out to file too, so that we don't have to recompute it all
+            # Write the data out to file to avoid further recomputation
             with open('sdata/(%d, %d).snappy' % (u, v), 'wb') as f:
                 f.write(compressed_data)
             db.query(sql)
