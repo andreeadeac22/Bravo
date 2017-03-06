@@ -1,11 +1,6 @@
 ## @file
-"""
-Look at the data output from the ESRI preprocessor.
-
-Usage:
-
-python3 look.py [Thickness|Bed|Surface]
-"""
+# Look at the data output from the ESRI preprocessor.
+# Usage: python3 look.py [Thickness|Bed|Surface]
 
 import sys
 
@@ -27,12 +22,14 @@ def pickColumn(row):
 
 if __name__ == '__main__':
     datafile = pd.read_csv('output.csv')
+    ## @test Check that datafile was assigned to the content of output.csv
     assert datafile is not None
 
     width = datafile.Col.max() - datafile.Col.min() + 1
     height = datafile.Row.max() - datafile.Row.min() + 1
-    ## @test Check that the width and the height are positive
+    ## @test Check that the width is positive
     assert width > 0
+    ## @test Check that the height is positive
     assert heigth > 0
 
     offset_width = datafile.Col.min()

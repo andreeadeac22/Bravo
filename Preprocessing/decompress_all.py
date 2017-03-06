@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 ## @file
-"""
-Decompress all snappy files, in the format that we're storing them. This is because we're using a slightly different format to the snappy command line tool.
-    
-Assumptions: Already ran geotiff2postgres.py and created decomp_data directory.
-Usage: ./decompress.py <in file> <out file>
-"""
-
+# Decompress all snappy files, in the format that we're storing them. This is because we're using a slightly different format to the snappy command line tool.
+# Assumptions: Already ran geotiff2postgres.py and created decomp_data directory.
+# Usage: ./decompress.py
 
 import sys
 import os.path
@@ -15,7 +11,7 @@ from snappy import uncompress
 
 ## box_size is the width and the height of each tile
 box_size = 500
-##usize is the maximum of the first tag of the snappy files
+## usize is the maximum of the first tag of the snappy files
 usize = 25500
 ## vsize is the maximum of the second tag of the snappy files
 vsize = 20500
@@ -31,7 +27,9 @@ if __name__ == "__main__":
                 ## decompressed files are in decomp_data directory
                 of = 'decomp_data/(%d,%d)' % (u,v) 
                 with open(_if, 'rb') as f:
+                    ## data copied from compressed file
                     data = f.read()
+                    ## uncompressed data
                     decomp = uncompress(data)
                     with open(of, 'wb') as oof:
                         oof.write(decomp)

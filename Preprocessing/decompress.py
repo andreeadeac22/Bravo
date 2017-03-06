@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 ## @file
-"""
-Decompress a snappy file, in the format that we're storing it. This is because
-we're using a slightly different format to the snappy command line tool.
-
-Usage: ./decompress.py <in file> <out file>
-"""
+# Decompress a snappy file, in the format that we're storing it. This is because we're using a slightly different format to the snappy command line tool.
+# Usage: ./decompress.py in_file out_file
 
 import sys
 

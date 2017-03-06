@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ## @file
-"""
-Perform multiple compression benchmarks.
-
-Usage: ./geotiff2postgres.py <tiff file> 
-"""
+# Perform multiple compression benchmarks.
+# Usage: ./geotiff2postgres.py tiff_file
 
 import sys
 import time
@@ -20,7 +17,7 @@ import numpy as np
 
 from PIL import Image
 
-# initialize all these as empty arrays
+## initialize as empty arrays
 snappy_res, gz_res, bz2_res, lzma_res = ([] for i in xrange(4))
 snappy_sizes, gz_sizes, bz2_sizes, lzma_sizes = ([] for i in xrange(4))
 snappy_de_res, gz_de_res, bz2_de_res, lzma_de_res = ([] for i in xrange(4))
@@ -38,7 +35,7 @@ def benchmark_one(data, algo, comp_var, decomp_var, size_var):
 	size_var -- a list of the compression sizes
 	"""
     t1 = time.time()
-    #test that there is data that is compressed
+    ## @test that there is data that is compressed
     assert data is not None
     comp = algo.compress(data)
     t2 = time.time()
@@ -88,7 +85,7 @@ data = np.asarray(img)
 width, height = data.shape
 print(len(data.tobytes()))
 sys.exit(0)
-# our chunks are box_size x box_size px
+## our chunks are box_size x box_size px
 box_size = 500
 
 
@@ -99,7 +96,9 @@ for x in range(0, width, box_size):
         frame_width = min(width - x, box_size)
         frame_height = min(height - y, box_size)
         
+        ## @test test that width is positive
         assert frame_width > 0
+         ## @test test that height is positive
         assert frame_height > 0
         
         frame_data = data[x:x+frame_width,y:y+frame_height]

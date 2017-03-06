@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ## @file
-"""
-Convert an input (Geo)TIFF file to ESRI data. 
-It works on Python2, but it might give errors on Python3.
+# Convert an input (Geo)TIFF file to ESRI data. It works on Python2, but it might give errors on Python3.
+# Assumptions: Tthere is a folder data where snappy files will be saved.
+# Usage: ./geotiff2postgres.py <tiff file> <postgres user>
 
-Assumptions: Tthere is a folder data where snappy files will be saved. 
-
-Usage: ./geotiff2postgres.py <tiff file> <postgres user>
-"""
 import sys
 import snappy
 import numpy as np
@@ -70,6 +66,20 @@ def check_table(db_name, table_name, db_user):
     con.commit()
     con.close()
 
+def test_empty(db_name, db_user):
+    """
+        Check that table is empty before starting to insert 
+    """
+    ## Set connection to the grpproj database
+    # How to instantiate it depends on how PostgreSQL was installed
+    # Alternative: con = connect(dbname=db_name, user=db_user, host='localhost')
+    con = connect(dbname=db_name, user=db_user, host="/tmp")
+    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cur = con.cursor()
+    cur.execute("SELECT count(*) from data;")
+    
+    ## @test Check that there are no records in data table
+    assert cur.fetchone()[0] == 0
 
 img = gdal.Open(sys.argv[1])
 data = np.array(img.GetRasterBand(1).ReadAsArray())
@@ -99,9 +109,16 @@ table_name = 'data'
 check_database(db_name, db_user)
 check_table(db_name, table_name, db_user)
 
+## Database in which data from the .tiff file will be stored
 db = DB(dbname='grpproj', host='localhost', user=db_user)
+
+## @test Check that db was assigned to a database
+assert db is not None
+
 clean_sql = 'DELETE FROM data'
 db.query(clean_sql)
+
+test_empty(db_name, db_user)
 
 _id = 0
 # we'll break down the image into (up to) 500px*500px chunks

@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ## @file
-
-"""
-    This file iterates through all the decompressed snappy files (which are stored in decomp_data directory after running decompress_all.py) and all the points in each file. For each consecutive pair of height, it computes the difference and if it is too close, it deletes the point, while if it is too far, it adds additional points with heights in that interval. 
-    Assumptions: Already ran geotiff2posgres.py, created sdata directory and created table sdata with same columns as table data
-    Usage: ./smoothen.py postgres
-    Output: New snappy files should now be in sdata directory and sdata should be populated
-"""
+# This file iterates through all the decompressed snappy files (which are stored in decomp_data directory after running decompress_all.py) and all the points in each file. For each consecutive pair of height, it computes the difference and if it is too close, it deletes the point, while if it is too far, it adds additional points with heights in that interval.
+# Assumptions: Already ran geotiff2posgres.py, created sdata directory and created table sdata with same columns as table data
+# Usage: ./smoothen.py postgres
+# Output: New snappy files should now be in sdata directory and sdata should be populated
 
 import sys
 import numpy as np

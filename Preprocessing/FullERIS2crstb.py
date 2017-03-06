@@ -1,16 +1,7 @@
 ## @file
-
-"""
-This script reads three .txt files, ESRI grids for the Surface (Elevation) of ice,
-ice thickness, and the ice bed (hard rock beneath the ice).
-(look at https://en.wikipedia.org/wiki/Esri_grid ). Then, a config file.
-
-
-How to call:
-python FullERIS2crstb.py bedmap2_surface.txt
-	bedmap2_thickness.txt bedmap2_bed.txt config.txt 
-
-"""
+# This script reads three .txt files, ESRI grids for the Surface (Elevation) of ice, ice thickness, and the ice bed (hard rock beneath the ice). (look at https://en.wikipedia.org/wiki/Esri_grid ). Then, a config file.
+# How to call:
+# python FullERIS2crstb.py bedmap2_surface.txt bedmap2_thickness.txt bedmap2_bed.txt config.txt
 
 import sys
 
@@ -28,10 +19,14 @@ bed = open (arguments[3], 'r')
 # As well as the dimensions of the segment that is processed
 conf = open (arguments[4], 'r')
 begy, begx = int(conf.readline().split()[1]), int(conf.readline().split()[1])
+## @test Check if begx was assigned
 assert begx is not None
+## @test Check if begy was assigned
 assert begy is not None
 leny, lenx = int(conf.readline().split()[1]), int(conf.readline().split()[1])
+## @test Check if lenx was assigned
 assert lenx is not None
+## @test Check if leny was assigned
 assert leny is not None
 
 
@@ -44,7 +39,7 @@ for k in xrange(6):
 
 output = open("output.csv", "w")
 
-#write a simple header:
+# write a simple header:
 output.write("Col,Row,Surface,Thickness,Bed\n")
 
 for row, line in enumerate(surface):
