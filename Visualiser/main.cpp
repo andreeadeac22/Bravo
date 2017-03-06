@@ -71,7 +71,7 @@ int main(int argc, char** argv)
 
     scene->addChild(ls);
 
-    //Tiled scene stuff
+    //Tiled scene 
     Array2D<TerrainTile::TileType> types(tile_count_x, tile_count_y);
     for (int x = 0; x < types.width(); x++) {
         for (int y = 0; y < types.height(); y++) {
@@ -85,10 +85,10 @@ int main(int argc, char** argv)
 
     viewer.setSceneData(scene.get());
 
-    //Stats Event Handler s key
+    //Stats Event Handler's key
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
-    // add the state manipulator
+    //Add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
     //Windows size handler
@@ -100,8 +100,6 @@ int main(int argc, char** argv)
     Vec3 t_center(0,0,0);
     Vec3 t_eye(-500, -500, 500);
     terrainMan->setHomePosition(t_eye, t_center, Vec3(0, 0, 1.0f));
-
-    //return (viewer.run());
 
     ref_ptr<KeyboardController> keyboardCtrl(new KeyboardController);
     viewer.addEventHandler(keyboardCtrl);
@@ -131,12 +129,7 @@ int main(int argc, char** argv)
             moveVec += Vec3d(0, 1, 0);
         } else if (keyboardCtrl->isKeyDown(osgGA::GUIEventAdapter::KEY_Right)) {
             moveVec += Vec3d(0, -1, 0);
-        } else if (keyboardCtrl->isKeyDown(osgGA::GUIEventAdapter::KEY_Space)) {
-            // need code to return to the start position
-             //cam_center = center + Vec3(2000, 2000, 2000);
-             //cam_eye = center;
-             //cam_up = Vec3(0, 0, 200);
-        }
+        } 
 
         if (moveVec != Vec3d(0.0, 0.0, 0.0)) {
             double distToCenter = (cam_center - cam_eye).length();
