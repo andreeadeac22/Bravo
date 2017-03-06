@@ -145,7 +145,7 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
     Vec3Array* iceFaceTris = new Vec3Array;
     int iceFaceTriCount = 0;
 
-    int vertexCount = heightMap->getWidth();
+    int vertexCount = heightMap->getWidth() + 1;
 
     Vec3Array* iceUpperVertices = new Vec3Array;
     Vec3Array* iceUpperNorms = new Vec3Array;
@@ -324,7 +324,7 @@ void StaticIceTile::setHeightMap(HeightMap *heightMap)
     iceMaterial->setSpecular(Material::FRONT_AND_BACK, Vec4(0.8, 0.8, 0.8, 1));
     iceMaterial->setShininess(Material::FRONT_AND_BACK, 64);
 
-    int vertexCount = heightMap->getWidth();
+    int vertexCount = heightMap->getWidth() + 1;
 
     Geometry* iceSurface = new Geometry;
     iceSurface->getOrCreateStateSet()->setAttributeAndModes(iceMaterial.get(), StateAttribute::ON);
@@ -345,8 +345,8 @@ void StaticIceTile::setHeightMap(HeightMap *heightMap)
     //Define the faces as elements list
     DrawElementsUInt* faces = new DrawElementsUInt(PrimitiveSet::TRIANGLES, 0);
 
-    for (int x = 0; x < vertexCount - 1; x++) {
-        for (int y = 0; y < vertexCount - 1; y++) {
+    for (int x = 0; x < vertexCount-1; x++) {
+        for (int y = 0; y < vertexCount-1; y++) {
             uint32_t ibl = x * vertexCount + y;
             uint32_t ibr = (x + 1) * vertexCount + y;
             uint32_t itl = x * vertexCount + (y + 1);

@@ -47,7 +47,7 @@ SquareTile* TileStore::processDbRow(pqxx::result::tuple row) {
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
-    return NULL;
+    return nullptr;
 }
 
 SquareTile* TileStore::getTileAt(int x, int y) {

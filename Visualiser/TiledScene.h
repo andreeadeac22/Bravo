@@ -7,6 +7,7 @@
 #include "TerrainTile.h"
 #include "HeightMap.h"
 #include "AsyncTerrainUpdater.h"
+#include "AsyncTerrainLoader.h"
 
 /**
  * @brief Handles loading/unloading of terrain tiles,
@@ -32,9 +33,6 @@ public:
 
     ~TiledScene();
 
-    /** Set the height map data for the tile at this location */
-    void setHeightMap(int x, int y, HeightMap *heightMap);
-
     /**
      * @brief Update the visible nodes based on camera position
      * @param pos
@@ -49,6 +47,13 @@ public:
         return group.get();
     }
 
+    /**
+     * @brief Queue an update of the tiles at p with a heightmap
+     * @param p
+     * @param heightMap
+     */
+    void updateTileAt(osg::Vec2i p, HeightMap* heightMap);
+
 
 private:
     Array2D<TerrainTile*> terrainTiles;
@@ -60,5 +65,7 @@ private:
     float render_distance_sq;
 
     AsyncTerrainUpdater asyncTerrainUpdater;
+
+public:AsyncTerrainLoader *asyncTerrainLoader;
 
 };

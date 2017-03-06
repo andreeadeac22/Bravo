@@ -13,7 +13,8 @@ using namespace osg;
  */
 TiledScene::TiledScene(Array2D<TerrainTile::TileType> &tileTypes, float t_width)
     : terrainTiles(tileTypes.width(), tileTypes.height()), tile_width(t_width),
-      group(new Group()), render_distance_sq(10.0f * 10.0f), asyncTerrainUpdater(1)
+      group(new Group()), render_distance_sq(10.0f * 10.0f),
+      asyncTerrainUpdater(1)
 {
     for (int x = 0; x < terrainTiles.width(); x++) {
         for (int y = 0; y < terrainTiles.height(); y++) {
@@ -24,6 +25,8 @@ TiledScene::TiledScene(Array2D<TerrainTile::TileType> &tileTypes, float t_width)
             group->addChild(tile->getNode());
         }
     }
+
+    asyncTerrainLoader = new AsyncTerrainLoader(Vec2i(tileTypes.width(), tileTypes.height()), *this);
 }
 
 TiledScene::~TiledScene()
@@ -33,12 +36,8 @@ TiledScene::~TiledScene()
             delete terrainTiles.get(x, y);
         }
     }
-}
 
-/** Set the height map data for the tile at this location */
-void TiledScene::setHeightMap(int x, int y, HeightMap *heightMap)
-{
-    terrainTiles.get(x, y)->setHeightMap(heightMap);
+    delete asyncTerrainLoader;
 }
 
 /**
@@ -62,12 +61,22 @@ void TiledScene::updateCameraPosition(osg::Vec3d pos)
             } else {
                 tile->show();
 
-                if (!tile->isGenerated()) {
-                    asyncTerrainUpdater.enqueueJob(tile);
-                    tile->setGenerated();
-                    //log_info << "Queued update of tile " << x << ", " << y << std::endl;
-                }
+//                if (!tile->isGenerated()) {
+//                    asyncTerrainUpdater.enqueueJob({tile, nullptr});
+//                    tile->setGenerated();
+//                    //log_info << "Queued update of tile " << x << ", " << y << std::endl;
+//                }
             }
         }
     }
+
+    Vec2i center(pos.x(), pos.y());
+    asyncTerrainLoader->setCurrentCenter(center);
+}
+
+
+void TiledScene::updateTileAt(osg::Vec2i p, HeightMap* heightMap)
+{
+    TerrainTile* tileAt = terrainTiles.get(p.x(), p.y());
+    asyncTerrainUpdater.enqueueJob({tileAt, heightMap});
 }

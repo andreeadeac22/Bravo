@@ -3,24 +3,33 @@
 using namespace osg;
 
 HeightMap::HeightMap(int count, float t_width)
-    : types(count + 2, count + 2), tile_width(t_width),
-      sample_spacing(tile_width / (float)(count - 1))
+    : types(count + 3, count + 3), heights(count + 3, count + 3), tile_width(t_width),
+      sample_spacing(tile_width / (float)(count))
 {
     //Initialise types
-    for (int x = 0; x < types.width(); x++) {
-        for (int y = 0; y < types.width(); y++) {
-            types.get(x, y) = TYPE_ICE;
-        }
-    }
+    types.init(TYPE_WATER);
+    heights.init(0.0f);
+}
+
+/** Set properties for a sample */
+void HeightMap::set(int x, int y, float height, bool water)
+{
+    heights.get(x + 1, y + 1) = height;
+    types.get(x + 1, y + 1) = water ? TYPE_WATER : TYPE_ICE;
+}
+
+osg::Vec3 HeightMap::getVertexp(int x, int y) const
+{
+    return osg::Vec3(sample_spacing * x, sample_spacing * y, getHeight(x, y));
 }
 
 osg::Vec3 HeightMap::getNormal(int x, int y) const
 {
     //The below commented out code shows it's possible to generate smooth normals
     //Without knowing whats in the tile next to you (with only slightly noticeable effects)
-    if (x == 0 || y == 0 || x == getWidth() - 1 || y == getWidth() - 1) {
-        return osg::Vec3(0, 0, 1.0f);
-    }
+//    if (x == 0 || y == 0 || x == getWidth() - 1 || y == getWidth() - 1) {
+//        return osg::Vec3(0, 0, 1.0f);
+//    }
 
     /*
      * Normal of a point can be found by considering the average
@@ -111,50 +120,4 @@ bool HeightMap::testCompareBoundary(int x, int y, HType expectedType)
         return false;
 
     return types.get(x, y) != expectedType;
-}
-
-
-/**
- * @brief HeightMap
- * @param count Number of samples of height (horizontally)
- * @param t_width    Width of tile
- */
-GridHeightMap::GridHeightMap(int count, float t_width)
-    : HeightMap(count, t_width), heights(count + 2, count + 2)
-
-{
-    for (int x = 0; x < heights.width(); x++) {
-        for (int y = 0; y < heights.width(); y++) {
-            heights.get(x, y) = 0.0f;
-        }
-    }
-}
-
-/** Set properties for a sample */
-void GridHeightMap::set(int x, int y, float height, bool water)
-{
-    heights.get(x + 1, y + 1) = height;
-    types.get(x + 1, y + 1) = water ? TYPE_WATER : TYPE_ICE;
-}
-
-osg::Vec3 GridHeightMap::getVertexp(int x, int y) const
-{
-    return osg::Vec3(sample_spacing * x, sample_spacing * y, getHeight(x, y));
-}
-
-
-VectorHeightMap::VectorHeightMap(int count, float t_width)
-    : HeightMap(count, t_width), vertices(count + 2, count + 2)
-{
-}
-
-void VectorHeightMap::set(int x, int y, osg::Vec3 v, bool water, bool boundary)
-{
-    vertices.get(x + 1, y + 1) = v;
-    types.get(x + 1, y + 1) = boundary ? TYPE_BOUNDARY : (water ? TYPE_WATER : TYPE_ICE);
-}
-
-osg::Vec3 VectorHeightMap::getVertexp(int x, int y) const
-{
-    return vertices.get(x + 1, y + 1);
 }
