@@ -34,7 +34,7 @@ void TerrainTile::hide()
     }
 }
 
-void TerrainTile::setModel(ref_ptr<Geometry> geom)
+void TerrainTile::setModel(Node* geom)
 {
     //Remove any current nodes
     int numChildren = tile_geode->getNumChildren();
@@ -42,8 +42,8 @@ void TerrainTile::setModel(ref_ptr<Geometry> geom)
         tile_geode->removeChildren(0, numChildren);
 
     //Add the next model
-    if (geom.get() != nullptr) {
-        tile_geode->addChild(geom.get());
+    if (geom != nullptr) {
+        tile_geode->addChild(geom);
     }
 }
 
@@ -122,6 +122,31 @@ StaticBoundaryIceTile::StaticBoundaryIceTile(float t_width, osg::Vec2s coords)
 
 void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
 {
+    geomFull = new Group;
+    geomReduced = new Group;
+
+    render(heightMap, geomFull);
+
+    HeightMapSimplifier heightSimpl(heightMap, 8);
+    render(&heightSimpl, geomReduced);
+}
+
+void StaticBoundaryIceTile::updateEyeDist(float dist)
+{
+    float lowres = 1500.0f;
+    float cutoff = 6000.0f;
+
+    if (dist < lowres) {
+        setModel(geomFull.get());
+    } else if (dist < cutoff) {
+        setModel(geomReduced.get());
+    } else {
+        setModel(nullptr);
+    }
+}
+
+void StaticBoundaryIceTile::render(IHeightMap *heightMap, osg::ref_ptr<osg::Group> geometry)
+{
     ref_ptr<Material> iceMaterial = new Material;
     iceMaterial->setColorMode(Material::DIFFUSE);
     iceMaterial->setAmbient(Material::FRONT_AND_BACK, Vec4(0.1, 0.1, 0.1, 1));
@@ -165,7 +190,7 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
     Vec3Array* iceUpperNorms = new Vec3Array;
     for (int x = 0; x < vertexCount; x++) {
         for (int y = 0; y < vertexCount; y++) {
-            iceUpperVertices->push_back(heightMap->getVertexp(x, y));
+            iceUpperVertices->push_back(heightMap->getVertex(x, y));
             iceUpperNorms->push_back(heightMap->getNormal(x, y));
         }
     }
@@ -190,10 +215,10 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
             uint32_t itl = x * vertexCount + (y + 1);
             uint32_t itr = (x + 1) * vertexCount + (y + 1);
 
-            Vec3 vbl = heightMap->getVertexp(x, y);
-            Vec3 vbr = heightMap->getVertexp(x + 1, y);
-            Vec3 vtl = heightMap->getVertexp(x, y + 1);
-            Vec3 vtr = heightMap->getVertexp(x + 1, y + 1);
+            Vec3 vbl = heightMap->getVertex(x, y);
+            Vec3 vbr = heightMap->getVertex(x + 1, y);
+            Vec3 vtl = heightMap->getVertex(x, y + 1);
+            Vec3 vtr = heightMap->getVertex(x + 1, y + 1);
 
             //If the vertices at bottom are ice
             if (bl && br) {
@@ -306,8 +331,6 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
 
     iceUpperSurface->addPrimitiveSet(iceUpperFaces);
 
-    //iceUpperSurface->addPrimitiveSet(new DrawArrays(PrimitiveSet::TRIANGLES, 0, iceUpperTriCount * 3));
-
     Geometry* iceFaceSurface = new Geometry;
     iceFaceSurface->getOrCreateStateSet()->setAttributeAndModes(iceMaterial.get(), StateAttribute::ON);
 
@@ -316,12 +339,11 @@ void StaticBoundaryIceTile::setHeightMap(HeightMap *heightMap)
 
     osgUtil::SmoothingVisitor smoothifier;
     smoothifier.smooth(*waterSurface);
-    //smoothifier.smooth(*iceUpperSurface, osg::PI);
     smoothifier.smooth(*iceFaceSurface);
 
-    tile_geode->addChild(waterSurface);
-    tile_geode->addChild(iceUpperSurface);
-    tile_geode->addChild(iceFaceSurface);
+    geometry->addChild(waterSurface);
+    geometry->addChild(iceUpperSurface);
+    geometry->addChild(iceFaceSurface);
 }
 
 StaticIceTile::StaticIceTile(float t_width, osg::Vec2s coords)
@@ -345,7 +367,7 @@ void StaticIceTile::setHeightMap(HeightMap *heightMap)
 
     render(heightMap, geomFull.get());
 
-    HeightMapSimplifier heightSimpl(heightMap, 16);
+    HeightMapSimplifier heightSimpl(heightMap, 8);
     render(&heightSimpl, geomReduced.get());
 }
 
@@ -355,11 +377,11 @@ void StaticIceTile::updateEyeDist(float dist)
     float cutoff = 6000.0f;
 
     if (dist < lowres) {
-        setModel(geomFull);
+        setModel(geomFull.get());
     } else if (dist < cutoff) {
-        setModel(geomReduced);
+        setModel(geomReduced.get());
     } else {
-        setModel(ref_ptr<Geometry>(nullptr));
+        setModel(nullptr);
     }
 }
 
@@ -372,7 +394,7 @@ void StaticIceTile::render(IHeightMap *heightMap, Geometry* geometry)
     Vec3Array* normals = new Vec3Array;
     for (int x = 0; x < vertexCount; x++) {
         for (int y = 0; y < vertexCount; y++) {
-            triangles->push_back(heightMap->getVertexp(x, y));
+            triangles->push_back(heightMap->getVertex(x, y));
             normals->push_back(heightMap->getNormal(x, y));
         }
     }

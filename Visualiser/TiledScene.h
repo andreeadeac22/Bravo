@@ -28,8 +28,9 @@ public:
      * the tileTypes grid indicates what type of tile to load
      * at this point (see TerrainTile::TileType)
      * @param t_width    Width of each tile (in units/meters)
+     * @param dbname    Database name to connect to
      */
-    TiledScene(Array2D<TerrainTile::TileType> &tileTypes, float t_width);
+    TiledScene(Array2D<TerrainTile::TileType> &tileTypes, int t_width, std::string dbname);
 
     ~TiledScene();
 
@@ -38,10 +39,6 @@ public:
      * @param pos
      */
     void updateCameraPosition(osg::Vec3d pos);
-
-    void setRenderDistance(float dist) {
-        render_distance_sq = dist * dist;
-    }
 
     osg::Node* getNode() {
         return group.get();
@@ -62,10 +59,8 @@ private:
 
     osg::ref_ptr<osg::Group> group;
 
-    float render_distance_sq;
-
     AsyncTerrainUpdater asyncTerrainUpdater;
 
-public:AsyncTerrainLoader *asyncTerrainLoader;
+    AsyncTerrainLoader *asyncTerrainLoader;
 
 };

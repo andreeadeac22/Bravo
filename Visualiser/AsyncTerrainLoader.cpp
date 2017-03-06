@@ -8,8 +8,8 @@
 
 using namespace osg;
 
-AsyncTerrainLoader::AsyncTerrainLoader(osg::Vec2i tilingDim, TiledScene& tsc)
-    : scene(tsc), center(0, 0), centerChanged(true), heightMaps(tilingDim.x(), tilingDim.y()), running(true)
+AsyncTerrainLoader::AsyncTerrainLoader(osg::Vec2i tilingDim, TiledScene& tsc, int tileVWidth, std::string db)
+    : scene(tsc), center(0, 0), centerChanged(true), tileVertWidth(tileVWidth), dbname(db), heightMaps(tilingDim.x(), tilingDim.y()), running(true)
 {
     //Set all the tiles to load (all of them)
     tilesToLoad.reserve(tilingDim.x()*tilingDim.y());
@@ -45,9 +45,9 @@ void AsyncTerrainLoader::setCurrentCenter(osg::Vec2i c)
 void AsyncTerrainLoader::run_thread()
 {
     //TODO: Get all constants from elsewhere
-    float tile_width = 128.0f;
+    float tile_width = (float)tileVertWidth;
 
-    TileStore tl("bravodb");
+    TileStore tl(dbname);
 
     while (running && remainingTiles() > 0) {
         updateCenter();
@@ -56,7 +56,7 @@ void AsyncTerrainLoader::run_thread()
 
         SquareTile * t = tl.getTileAt(nxtTile.x(), nxtTile.y());
 
-        int width = 128;
+        int width = tileVertWidth;
         HeightMap* heightMap = new HeightMap(width, tile_width);
 
         if (t != nullptr) {
@@ -106,7 +106,6 @@ void AsyncTerrainLoader::updateCenter()
             Vec2f c2af(c2a.x(), c2a.y());
             Vec2f c2bf(c2b.x(), c2b.y());
             return c2af.length2() > c2bf.length2();
-            //return (c2a.x()*c2a.x() + c2a.y()*c2a.y()) < (c2b.x()*c2b.x() + c2b.y()*c2b.y());
         });
     }
 }

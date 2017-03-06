@@ -13,15 +13,39 @@
 //Forward declaration to avoid header issues
 class TiledScene;
 
+/**
+ * @brief Asynchronously loads tiles
+ * from the database and updates the height maps locally.
+ * An instantiation of this is designed to operate as the sole provider of
+ * height map data. The TiledScene class keeps the "center" up to date
+ * (facilitating deciding the next tiles to load).
+ * On loading a tile, it will use this tile to update neighbouring tiles, when
+ * a tile contains it's own data and data for adjacent tiles it is ready to be
+ * used to generate a vertex buffer, and is sent back to TiledScene to be
+ * queued as an update.
+ */
 class AsyncTerrainLoader
 {
 public:
-    AsyncTerrainLoader(osg::Vec2i tilingDim, TiledScene& tsc);
+    /**
+     * @brief Construct a Asynchronous terrain loader
+     * @param tilingDim Dimensions (in terms of width and height) of the tile space
+     * E.g. (4, 5) means tiles in X span from 0->3 and in Y span from 0->4
+     * @param tsc   Reference to the tiled scene object
+     * @param tileVWidth    Number of vertices per tile
+     * @param db    Name of database to connect to
+     */
+    AsyncTerrainLoader(osg::Vec2i tilingDim, TiledScene& tsc, int tileVWidth, std::string db);
 
     ~AsyncTerrainLoader();
 
+    /**
+     * @brief Set the centre of the players view
+     * @param c
+     */
     void setCurrentCenter(osg::Vec2i c);
 
+    /** Ask the thread to stop */
     void stop() {
         running = false;
     }
@@ -34,6 +58,10 @@ private:
     osg::Vec2i center;
     bool centerChanged;
 
+    int tileVertWidth;
+
+    std::string dbname;
+
     Array2D<HeightMap*> heightMaps;
 
     //Used to find the next nearest tile to load
@@ -45,11 +73,18 @@ private:
 
     void run_thread();
 
-    /** Find the next height map to load based on distance **/
+    /**
+     * @brief Find the next height map to load based on distance
+     * @return Next tile location to update
+     */
     osg::Vec2i getNextHeightMapJob();
 
     void updateCenter();
 
+    /**
+     * @brief remainingTiles
+     * @return Number of remaining tiles
+     */
     int remainingTiles();
 
     /**

@@ -12,16 +12,49 @@ class IHeightMap {
 public:
     virtual ~IHeightMap() {}
 
-    virtual osg::Vec3 getVertexp(int x, int y) const = 0;
+    /**
+     * @brief Get the vector for the vertex at this position (containing height and position)
+     * @param x X coord
+     * @param y Y coord
+     * @return
+     */
+    virtual osg::Vec3 getVertex(int x, int y) const = 0;
 
+    /**
+     * @brief Get the vector for the normal of the point at this position
+     * @param x
+     * @param y
+     * @return
+     */
     virtual osg::Vec3 getNormal(int x, int y) const = 0;
 
+    /**
+     * @brief Get the number of vertices for this tile (the tile actually stores more
+     * and when drawing, should end on this value)
+     * @return
+     */
     virtual int getWidth() const = 0;
 
+    /**
+     * @brief isIce
+     * @param x
+     * @param y
+     * @return True if the vertex at this point is ice
+     */
     virtual bool isIce(int x, int y) const = 0;
 
+    /**
+     * @brief isWater
+     * @param x
+     * @param y
+     * @return True if the vertex at this point is water
+     */
     virtual bool isWater(int x, int y) const = 0;
 
+    /**
+     * @brief Get the spacing between vertices
+     * @return
+     */
     virtual float getSampleSpacing() const = 0;
 };
 
@@ -48,7 +81,7 @@ public:
         return heights.get(x + 1, y + 1);
     }
 
-    virtual osg::Vec3 getVertexp(int x, int y) const;
+    virtual osg::Vec3 getVertex(int x, int y) const;
 
     virtual osg::Vec3 getNormal(int x, int y) const;
 
@@ -136,7 +169,7 @@ public:
      */
     HeightMapSimplifier(IHeightMap* o, int factor);
 
-    virtual osg::Vec3 getVertexp(int x, int y) const;
+    virtual osg::Vec3 getVertex(int x, int y) const;
 
     virtual osg::Vec3 getNormal(int x, int y) const;
 

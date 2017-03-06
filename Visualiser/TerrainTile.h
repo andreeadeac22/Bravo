@@ -77,10 +77,13 @@ protected:
     /**
      * @brief Set the geometry for this tile (replaces current set geometry)
      */
-    virtual void setModel(osg::ref_ptr<osg::Geometry> geom);
+    virtual void setModel(osg::Node* geom);
 
 };
 
+/**
+ * @brief This tile represents plain water
+ */
 class WaterTile : public TerrainTile
 {
 public:
@@ -91,6 +94,9 @@ private:
 
 };
 
+/**
+ * @brief Tile class for flat ice
+ */
 class BoringIceTile : public TerrainTile
 {
 public:
@@ -101,14 +107,29 @@ private:
 
 };
 
+/**
+ * @brief Tile class for ice boundary against water
+ */
 class StaticBoundaryIceTile : public TerrainTile
 {
 public:
     StaticBoundaryIceTile(float t_width, osg::Vec2s coords);
 
     virtual void setHeightMap(HeightMap *heightMap);
+
+    virtual void updateEyeDist(float dist);
+
+private:
+    osg::ref_ptr<osg::Group> geomFull;
+    osg::ref_ptr<osg::Group> geomReduced;
+
+    void render(IHeightMap *heightMap, osg::ref_ptr<osg::Group> geometry);
+
 };
 
+/**
+ * @brief Tile class for height mapped ice
+ */
 class StaticIceTile : public TerrainTile
 {
 public:

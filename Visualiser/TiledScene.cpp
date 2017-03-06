@@ -11,10 +11,9 @@ using namespace osg;
  * at this point (see TerrainTile::TileType)
  * @param t_width    Width of each tile (in units/meters)
  */
-TiledScene::TiledScene(Array2D<TerrainTile::TileType> &tileTypes, float t_width)
-    : terrainTiles(tileTypes.width(), tileTypes.height()), tile_width(t_width),
-      group(new Group()), render_distance_sq(10.0f * 10.0f),
-      asyncTerrainUpdater(1)
+TiledScene::TiledScene(Array2D<TerrainTile::TileType> &tileTypes, int t_width, std::__cxx11::string dbname)
+    : terrainTiles(tileTypes.width(), tileTypes.height()), tile_width((float)t_width),
+      group(new Group()), asyncTerrainUpdater(1)
 {
     for (int x = 0; x < terrainTiles.width(); x++) {
         for (int y = 0; y < terrainTiles.height(); y++) {
@@ -26,7 +25,7 @@ TiledScene::TiledScene(Array2D<TerrainTile::TileType> &tileTypes, float t_width)
         }
     }
 
-    asyncTerrainLoader = new AsyncTerrainLoader(Vec2i(tileTypes.width(), tileTypes.height()), *this);
+    asyncTerrainLoader = new AsyncTerrainLoader(Vec2i(tileTypes.width(), tileTypes.height()), *this, t_width, dbname);
 }
 
 TiledScene::~TiledScene()

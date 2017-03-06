@@ -34,8 +34,29 @@
 
 using namespace osg;
 
-int main()
+int main(int argc, char** argv)
 {
+    if (argc != 5) {
+        std::cout << "Usage: ./" << argv[0] << " <db name> <tile width> <tiles in x> <tiles in y>" << std::endl;
+        std::cout << "(Where tiles in x/y is the number of tiles to load from the database in each dimension)" << std::endl;
+        return 1;
+    }
+
+    int tile_vert_width = 1;
+    int tile_count_x = 1;
+    int tile_count_y = 1;
+
+    std::string databaseName(argv[1]);
+
+    try {
+        tile_vert_width = std::stoi(argv[2]);
+        tile_count_x = std::stoi(argv[3]);
+        tile_count_y = std::stoi(argv[4]);
+    } catch (std::exception e) {
+        std::cerr << "Failed to parse arguments." << std::endl;
+        return 1;
+    }
+
     osgViewer::Viewer viewer;
     ref_ptr<Group> scene(new Group);
 
@@ -43,7 +64,6 @@ int main()
     Vec3 lightPosition(500,500,4000);
     LightSource* ls = new LightSource;
     ls->getLight()->setPosition(Vec4(lightPosition,1));
-    //ls->getLight()->setDirection(Vec3(0, -1.0f, 0));
     ls->getLight()->setAmbient(Vec4(0.5,0.5,0.5,1.0));
     ls->getLight()->setDiffuse(Vec4(0.6,0.6,0.6,1.0));
     ls->getLight()->setSpecular(Vec4(0.8, 0.8, 0.8, 1.0));
@@ -52,22 +72,20 @@ int main()
     scene->addChild(ls);
 
     //Tiled scene stuff
-    float tile_width = 128.0f;
-    Array2D<TerrainTile::TileType> types(34, 34);
+    Array2D<TerrainTile::TileType> types(tile_count_x, tile_count_y);
     for (int x = 0; x < types.width(); x++) {
         for (int y = 0; y < types.height(); y++) {
             types.get(x, y) = TerrainTile::TYPE_STATIC_ICE;
         }
     }
 
-    ref_ptr<TiledScene> tiledScene(new TiledScene(types, tile_width));
-    tiledScene->setRenderDistance(20.0f);
+    ref_ptr<TiledScene> tiledScene(new TiledScene(types, tile_vert_width, databaseName));
 
     scene->addChild(tiledScene->getNode());
 
     viewer.setSceneData(scene.get());
 
-    //Stats Event Handler's key
+    //Stats Event Handler s key
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
     // add the state manipulator
@@ -79,8 +97,6 @@ int main()
     osgGA::TerrainManipulator* terrainMan = new osgGA::TerrainManipulator();
     viewer.setCameraManipulator(terrainMan);
 
-//    Vec3 t_center(2895.55, 2837, 26.7789);
-//    Vec3 t_eye(2584.64, 2526.09, 337.695);
     Vec3 t_center(0,0,0);
     Vec3 t_eye(-500, -500, 500);
     terrainMan->setHomePosition(t_eye, t_center, Vec3(0, 0, 1.0f));
