@@ -68,7 +68,7 @@ int main()
     Array2D<TerrainTile::TileType> types(34, 34);
     for (int x = 0; x < types.width(); x++) {
         for (int y = 0; y < types.height(); y++) {
-            types.get(x, y) = TerrainTile::TYPE_STATIC_BOUNDARY_ICE;
+            types.get(x, y) = TerrainTile::TYPE_STATIC_ICE;
         }
     }
 
@@ -131,7 +131,7 @@ int main()
 
         if (moveVec != Vec3d(0.0, 0.0, 0.0)) {
             double distToCenter = (cam_center - cam_eye).length();
-            Vec3d moveDist = moveVec * (distToCenter * 0.05);
+            Vec3d moveDist = moveVec * (distToCenter * 0.01);
             cam_center += moveDist;
             cam_eye += moveDist;
 
@@ -139,8 +139,8 @@ int main()
         }
 
         if (--cameraUpdateFrame <= 0) {
-            tiledScene->updateCameraPosition(cam_center);
-            cameraUpdateFrame = 20;
+            tiledScene->updateCameraPosition(cam_eye);
+            cameraUpdateFrame = 5;
         }
 
         viewer.frame();

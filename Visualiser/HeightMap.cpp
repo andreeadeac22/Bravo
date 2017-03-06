@@ -89,6 +89,22 @@ osg::Vec3 HeightMap::getNormal(int x, int y) const
     return norm;
 }
 
+int HeightMap::getWidth() const {
+    return types.width() - 3;
+}
+
+bool HeightMap::isIce(int x, int y) const {
+    return types.get(x + 1, y + 1) == TYPE_ICE || types.get(x + 1, y + 1) == TYPE_BOUNDARY;
+}
+
+bool HeightMap::isWater(int x, int y) const {
+    return types.get(x + 1, y + 1) == TYPE_WATER || types.get(x + 1, y + 1) == TYPE_BOUNDARY;
+}
+
+float HeightMap::getSampleSpacing() const {
+    return sample_spacing;
+}
+
 /** Scan the samples and find ice-water boundaries **/
 void HeightMap::calcBoundaries()
 {
@@ -120,4 +136,39 @@ bool HeightMap::testCompareBoundary(int x, int y, HType expectedType)
         return false;
 
     return types.get(x, y) != expectedType;
+}
+
+HeightMapSimplifier::HeightMapSimplifier(IHeightMap* o, int factor)
+    : other(o), div(factor)
+{
+}
+
+osg::Vec3 HeightMapSimplifier::getVertexp(int x, int y) const
+{
+    return other->getVertexp(x*div, y*div);
+}
+
+osg::Vec3 HeightMapSimplifier::getNormal(int x, int y) const
+{
+    return other->getNormal(x*div, y*div);
+}
+
+int HeightMapSimplifier::getWidth() const
+{
+    return other->getWidth() / div;
+}
+
+bool HeightMapSimplifier::isIce(int x, int y) const
+{
+    return other->isIce(x*div, y*div);
+}
+
+bool HeightMapSimplifier::isWater(int x, int y) const
+{
+    return other->isWater(x*div, y*div);
+}
+
+float HeightMapSimplifier::getSampleSpacing() const
+{
+    return other->getSampleSpacing() * (float)div;
 }

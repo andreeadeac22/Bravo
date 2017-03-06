@@ -5,8 +5,32 @@
 #include <util/Array2d.h>
 #include <cstdint>
 
-class HeightMap
-{
+/**
+ * @brief Interface for height map objects
+ */
+class IHeightMap {
+public:
+    virtual ~IHeightMap() {}
+
+    virtual osg::Vec3 getVertexp(int x, int y) const = 0;
+
+    virtual osg::Vec3 getNormal(int x, int y) const = 0;
+
+    virtual int getWidth() const = 0;
+
+    virtual bool isIce(int x, int y) const = 0;
+
+    virtual bool isWater(int x, int y) const = 0;
+
+    virtual float getSampleSpacing() const = 0;
+};
+
+/**
+ * @brief HeightMap class which stores the heights of vertices in a grid.
+ * Stores height map of a certain width, but also stores heights in adjacent
+ * tiles, in order to calculate correct normals
+ */
+class HeightMap : public IHeightMap {
 protected:
     enum HType {
         TYPE_ICE,
@@ -24,28 +48,20 @@ public:
         return heights.get(x + 1, y + 1);
     }
 
-    osg::Vec3 getVertexp(int x, int y) const;
+    virtual osg::Vec3 getVertexp(int x, int y) const;
 
-    osg::Vec3 getNormal(int x, int y) const;
+    virtual osg::Vec3 getNormal(int x, int y) const;
 
-    int getWidth() const {
-        return types.width() - 3;
-    }
+    virtual int getWidth() const;
 
-    bool isIce(int x, int y) const {
-        return types.get(x + 1, y + 1) == TYPE_ICE || types.get(x + 1, y + 1) == TYPE_BOUNDARY;
-    }
+    virtual bool isIce(int x, int y) const;
 
-    bool isWater(int x, int y) const {
-        return types.get(x + 1, y + 1) == TYPE_WATER || types.get(x + 1, y + 1) == TYPE_BOUNDARY;
-    }
+    virtual bool isWater(int x, int y) const;
 
-    float getSampleSpacing() const {
-        return sample_spacing;
-    }
+    virtual float getSampleSpacing() const;
 
     /** Scan the samples and find ice-water boundaries **/
-    virtual void calcBoundaries();
+    void calcBoundaries();
 
     /** Copy data the tile on the left */
     void copyFromLeft(HeightMap* map) {
@@ -105,5 +121,36 @@ protected:
         types.copyFrom(map->types, ox + 1, oy + 1, tx + 1, ty + 1, w, h);
         heights.copyFrom(map->heights, ox + 1, oy + 1, tx + 1, ty + 1, w, h);
     }
+
+};
+
+/**
+ * @brief Decorator/container class to simplify height map data
+ */
+class HeightMapSimplifier : public IHeightMap {
+public:
+    /**
+     * @brief
+     * @param o Height Map to simplify
+     * @param factor    Factor (must be power of 2)
+     */
+    HeightMapSimplifier(IHeightMap* o, int factor);
+
+    virtual osg::Vec3 getVertexp(int x, int y) const;
+
+    virtual osg::Vec3 getNormal(int x, int y) const;
+
+    virtual int getWidth() const;
+
+    virtual bool isIce(int x, int y) const;
+
+    virtual bool isWater(int x, int y) const;
+
+    virtual float getSampleSpacing() const;
+
+private:
+    IHeightMap* other;
+
+    int div;
 
 };

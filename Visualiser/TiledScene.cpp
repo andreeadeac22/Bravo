@@ -46,27 +46,13 @@ TiledScene::~TiledScene()
  */
 void TiledScene::updateCameraPosition(osg::Vec3d pos)
 {
-    pos *= 1.0 / tile_width;
-
     for (int x = 0; x < terrainTiles.width(); x++) {
         for (int y = 0; y < terrainTiles.height(); y++) {
-            float xd = pos.x() - (float)x;
-            float yd = pos.y() - (float)y;
-            float distFromCenterSq = (float)(xd * xd + yd * yd);
+            Vec3d tileCoord((x + 0.5) * tile_width, (y + 0.5) * tile_width, 0.0f);
+            float dist = (pos - tileCoord).length();
 
             TerrainTile* tile = terrainTiles.get(x, y);
-
-            if (distFromCenterSq > render_distance_sq) {
-                tile->hide();
-            } else {
-                tile->show();
-
-//                if (!tile->isGenerated()) {
-//                    asyncTerrainUpdater.enqueueJob({tile, nullptr});
-//                    tile->setGenerated();
-//                    //log_info << "Queued update of tile " << x << ", " << y << std::endl;
-//                }
-            }
+            tile->updateEyeDist(dist);
         }
     }
 
