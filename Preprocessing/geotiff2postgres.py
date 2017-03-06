@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ## @file
 # Convert an input (Geo)TIFF file to ESRI data. It works on Python2, but it might give errors on Python3.
-# Assumptions: Tthere is a folder data where snappy files will be saved.
+# Assumptions: There is a folder Bravo/Preprocessing/data where snappy files will be saved.
 # Usage: ./geotiff2postgres.py <tiff file> <postgres user>
 
 import sys
@@ -121,7 +121,7 @@ db.query(clean_sql)
 test_empty(db_name, db_user)
 
 _id = 0
-# we'll break down the image into (up to) 500px*500px chunks
+# Break down the image into (up to) 500px*500px chunks
 for x in range(0, width, box_size):
     for y in range(0, height, box_size):
         frame_width = min(width - x, box_size)
