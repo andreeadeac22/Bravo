@@ -25,10 +25,7 @@ osg::Vec3 HeightMap::getVertex(int x, int y) const
 
 osg::Vec3 HeightMap::getNormal(int x, int y) const
 {
-    /*
-     * Normal of a point can be found by considering the average
-     * Of normals of triangles against it
-     */
+    //Normal of a point can be found by considering the average of normals of triangles against it
     Vec3 here = getVertex(x, y);
 
 #ifdef SIMPLE_HEIGHT_MAP_NORMALS
@@ -53,7 +50,7 @@ osg::Vec3 HeightMap::getNormal(int x, int y) const
     norm.normalize();
 #else
     //Vectors of compass points in direction from here to next vertex
-    //(Vectors are in order, clockwise (i.e. N, NE, E, SE, S, SW, W, NW)
+    //Vectors are in clockwise order (i.e. N, NE, E, SE, S, SW, W, NW)
     //First find the vertex coords of the vertex in each direction
     Vec3 dirs[8] = {
         getVertex(x, y + 1), getVertex(x + 1, y + 1),
